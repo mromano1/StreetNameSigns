@@ -2,17 +2,26 @@
 
 A few years ago, we discussed the possibility of using Cyclomedia data to help identify signs in need of repair. We would like to revisit that conversation, focusing specifically on street name signs and exploring whether recent advances in AI could allow for a more automated approach. 
 
-Missing sign:
+## Missing sign:
 <picture>
- <source media="(prefers-color-scheme: dark)" srcset="YOUR-DARKMODE-IMAGE">
- <source media="(prefers-color-scheme: light)" srcset="YOUR-LIGHTMODE-IMAGE">
+ <source media="(prefers-color-scheme: dark)" srcset="readme Images/image001.jpg">
+ <source media="(prefers-color-scheme: light)" srcset="readme Images/image001.jpg">
  <img alt="Image001" src="readme Images/image001.jpg">
 </picture>
  
-
+<picture>
+ <source media="(prefers-color-scheme: dark)" srcset="readme Images/image002.jpg">
+ <source media="(prefers-color-scheme: light)" srcset="readme Images/image002.jpg">
+ <img alt="Image002" src="readme Images/image002.jpg">
+</picture>
  
+<picture>
+ <source media="(prefers-color-scheme: dark)" srcset="readme Images/image003.jpg">
+ <source media="(prefers-color-scheme: light)" srcset="readme Images/image003.jpg">
+ <img alt="Image003" src="readme Images/image003.jpg">
+</picture>
 
-Sign bent/damaged:
+## Sign bent/damaged:
 
  
 
