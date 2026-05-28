@@ -7,13 +7,13 @@ A few years ago, we discussed the possibility of using Cyclomedia data to help i
  <source media="(prefers-color-scheme: dark)" srcset="readme Images/image001.jpg">
  <source media="(prefers-color-scheme: light)" srcset="readme Images/image001.jpg">
  <img alt="Image001" src="readme Images/image001.jpg" width="200">
-</picture><br/>
+</picture>
  
 <picture>
  <source media="(prefers-color-scheme: dark)" srcset="readme Images/image002.jpg">
  <source media="(prefers-color-scheme: light)" srcset="readme Images/image002.jpg">
  <img alt="Image002" src="readme Images/image002.jpg" width="200">
-</picture><br/>
+</picture>
  
 <picture>
  <source media="(prefers-color-scheme: dark)" srcset="readme Images/image003.jpg">
