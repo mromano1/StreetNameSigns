@@ -1,4 +1,4 @@
-1. Introduction
+# Introduction
 
 Transportation agencies are increasingly seeking scalable and automated methods for monitoring roadway assets due to the high costs and operational limitations associated with manual inspections. Street signs are critical transportation assets that support roadway safety, traffic operations, navigation, and regulatory enforcement. Damage to street signs—including fading, bending, obstruction, vandalism, and structural deformation—can negatively affect visibility, readability, and compliance with the Manual on Uniform Traffic Control Devices (MUTCD). Traditional inspection methods rely heavily on labor-intensive field surveys, which are difficult to conduct at citywide scales and often result in delayed maintenance responses.
 
