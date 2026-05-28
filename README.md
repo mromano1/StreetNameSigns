@@ -6,7 +6,7 @@ Missing sign:
 <picture>
  <source media="(prefers-color-scheme: dark)" srcset="YOUR-DARKMODE-IMAGE">
  <source media="(prefers-color-scheme: light)" srcset="YOUR-LIGHTMODE-IMAGE">
- <img alt="Image001" src="YOUR-DEFAULT-IMAGE">
+ <img alt="Image001" src="readme Images/image001.jpg">
 </picture>
  
 
