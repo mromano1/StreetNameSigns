@@ -8,19 +8,19 @@ These are the types of sign distress we will be seeking with machine learning.
 <picture>
  <source media="(prefers-color-scheme: dark)" srcset="readme Images/image001.jpg">
  <source media="(prefers-color-scheme: light)" srcset="readme Images/image001.jpg">
- <img alt="Image001" src="readme Images/image001.jpg" width="300">
+ <img alt="Image001" src="readme Images/image001.jpg" width="300" height="200">
 </picture>
  
 <picture>
  <source media="(prefers-color-scheme: dark)" srcset="readme Images/image002.jpg">
  <source media="(prefers-color-scheme: light)" srcset="readme Images/image002.jpg">
- <img alt="Image002" src="readme Images/image002.jpg" width="300">
+ <img alt="Image002" src="readme Images/image002.jpg" width="300" height="200">
 </picture>
  
 <picture>
  <source media="(prefers-color-scheme: dark)" srcset="readme Images/image003.jpg">
  <source media="(prefers-color-scheme: light)" srcset="readme Images/image003.jpg">
- <img alt="Image003" src="readme Images/image003.jpg" width="300">
+ <img alt="Image003" src="readme Images/image003.jpg" width="300" height="200">
 </picture>
 
 ## Sign bent/damaged:
