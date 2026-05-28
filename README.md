@@ -1,8 +1,6 @@
 # StreetNameSigns
 
-A few years ago, we discussed the possibility of using Cyclomedia data to help identify signs in need of repair. We would like to revisit that conversation, focusing specifically on street name signs and exploring whether recent advances in AI could allow for a more automated approach. 
-
-These are the types of sign distress we will be seeking with machine learning.
+This project explores the use of 360-degree imagery, LiDAR point cloud data and machine learning to help identify signs in need of repair. These are the types of sign distress we will be seeking with machine learning.
 
 ## Missing sign:
 <picture>
@@ -102,6 +100,7 @@ These are the types of sign distress we will be seeking with machine learning.
 </picture> 
 
 ## Incomplete Intersections
-In addition, we would want to identify any T intersections with fewer than one complete set of signs (two signs total) and any other intersections with fewer than two complete sets of signs, four signs total.  All street name signs are tracked under “ST” orders in SIMS. If you or the intern supporting this effort do not have SIMS access, I can arrange that ASAP. I’m also happy to walk you through how to read an ST order if that would be helpful.
-Re-flag (sign facing wrong direction):
+In addition, this project identifies any T intersections with fewer than one complete set of signs (two signs total) and any other intersections with fewer than two complete sets of signs, four signs total.  
+
+All street name signs are tracked in NYC DOT's Street Information Management Systems (SIMS) by filtering for “ST” under order type.This data is available online via NYC Open Data.
 
