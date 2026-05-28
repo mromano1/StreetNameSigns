@@ -27,19 +27,19 @@ These are the types of sign distress we will be seeking with machine learning.
 <picture>
  <source media="(prefers-color-scheme: dark)" srcset="readme Images/image004.jpg">
  <source media="(prefers-color-scheme: light)" srcset="readme Images/image004.jpg">
- <img alt="Image004" src="readme Images/image004.jpg" width="300">
+ <img alt="Image004" src="readme Images/image004.jpg" width="300" height="200">
 </picture>
 
 <picture>
  <source media="(prefers-color-scheme: dark)" srcset="readme Images/image005.jpg">
  <source media="(prefers-color-scheme: light)" srcset="readme Images/image005.jpg">
- <img alt="Image005" src="readme Images/image005.jpg" width="300">
+ <img alt="Image005" src="readme Images/image005.jpg" width="300" height="200">
 </picture>
  
 <picture>
  <source media="(prefers-color-scheme: dark)" srcset="readme Images/image006.jpg">
  <source media="(prefers-color-scheme: light)" srcset="readme Images/image006.jpg">
- <img alt="Image006" src="readme Images/image006.jpg" width="300">
+ <img alt="Image006" src="readme Images/image006.jpg" width="300" height="200">
 </picture>
 
 ## Old design with white border and all capital letters.
