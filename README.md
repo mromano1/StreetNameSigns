@@ -12,13 +12,13 @@ A few years ago, we discussed the possibility of using Cyclomedia data to help i
 <picture>
  <source media="(prefers-color-scheme: dark)" srcset="readme Images/image002.jpg">
  <source media="(prefers-color-scheme: light)" srcset="readme Images/image002.jpg">
- <img alt="Image002" src="readme Images/image002.jpg">
+ <img alt="Image002" src="readme Images/image002.jpg" width: 200px>
 </picture><br/>
  
 <picture>
  <source media="(prefers-color-scheme: dark)" srcset="readme Images/image003.jpg">
  <source media="(prefers-color-scheme: light)" srcset="readme Images/image003.jpg">
- <img alt="Image003" src="readme Images/image003.jpg">
+ <img alt="Image003" src="readme Images/image003.jpg" width: 200px>
 </picture>
 
 ## Sign bent/damaged:
