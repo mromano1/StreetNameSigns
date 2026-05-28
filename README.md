@@ -46,59 +46,59 @@ These are the types of sign distress we will be seeking with machine learning.
 <picture>
  <source media="(prefers-color-scheme: dark)" srcset="readme Images/image007.jpg">
  <source media="(prefers-color-scheme: light)" srcset="readme Images/image007.jpg">
- <img alt="Image007" src="readme Images/image007.jpg" width="300">
+ <img alt="Image007" src="readme Images/image007.jpg" width="300" height="200">
 </picture>
 
 <picture>
  <source media="(prefers-color-scheme: dark)" srcset="readme Images/image008.jpg">
  <source media="(prefers-color-scheme: light)" srcset="readme Images/image008.jpg">
- <img alt="Image008" src="readme Images/image008.jpg" width="300">
+ <img alt="Image008" src="readme Images/image008.jpg" width="300" height="200">
 </picture>
  
 <picture>
  <source media="(prefers-color-scheme: dark)" srcset="readme Images/image009.jpg">
  <source media="(prefers-color-scheme: light)" srcset="readme Images/image009.jpg">
- <img alt="Image009" src="readme Images/image009.jpg" width="300">
+ <img alt="Image009" src="readme Images/image009.jpg" width="300" height="200">
 </picture>
 
 ## Faded sign:
 <picture>
  <source media="(prefers-color-scheme: dark)" srcset="readme Images/image010.jpg">
  <source media="(prefers-color-scheme: light)" srcset="readme Images/image010.jpg">
- <img alt="Image010" src="readme Images/image010.jpg" width="300">
+ <img alt="Image010" src="readme Images/image010.jpg" width="300" height="200">
 </picture>
 
 <picture>
  <source media="(prefers-color-scheme: dark)" srcset="readme Images/image011.jpg">
  <source media="(prefers-color-scheme: light)" srcset="readme Images/image011.jpg">
- <img alt="Image011" src="readme Images/image011.jpg" width="300">
+ <img alt="Image011" src="readme Images/image011.jpg" width="300" height="200">
 </picture>
  
 ## Hanging sign:
 <picture>
  <source media="(prefers-color-scheme: dark)" srcset="readme Images/image012.jpg">
  <source media="(prefers-color-scheme: light)" srcset="readme Images/image012.jpg">
- <img alt="Image012" src="readme Images/image012.jpg" width="300">
+ <img alt="Image012" src="readme Images/image012.jpg" width="300" height="200">
 </picture> 
 
 ## Vandalized:
 <picture>
  <source media="(prefers-color-scheme: dark)" srcset="readme Images/image013.jpg">
  <source media="(prefers-color-scheme: light)" srcset="readme Images/image013.jpg">
- <img alt="Image013" src="readme Images/image013.jpg" width="300">
+ <img alt="Image013" src="readme Images/image013.jpg" width="300" height="200">
 </picture> 
   
 ## Red Flagged (sign facing wrong direction)
 <picture>
  <source media="(prefers-color-scheme: dark)" srcset="readme Images/image014.jpg">
  <source media="(prefers-color-scheme: light)" srcset="readme Images/image014.jpg">
- <img alt="Image014" src="readme Images/image014.jpg" width="300">
+ <img alt="Image014" src="readme Images/image014.jpg" width="300" height="200">
 </picture> 
 
 <picture>
  <source media="(prefers-color-scheme: dark)" srcset="readme Images/image015.jpg">
  <source media="(prefers-color-scheme: light)" srcset="readme Images/image015.jpg">
- <img alt="Image015" src="readme Images/image015.jpg" width="300">
+ <img alt="Image015" src="readme Images/image015.jpg" width="300" height="200">
 </picture> 
 
 ## Incomplete Intersections
