@@ -22,9 +22,9 @@ The proposed workflow supports improved inspection efficiency, reduced operation
 
 # References
 
-Chen, T., & Ren, J. (2023). *MFL-YOLO: An object detection model for damaged traffic signs*. arXiv. https://doi.org/10.48550/arXiv.2309.06750. Open-access article: https://arxiv.org/pdf/2309.06750.pdf
+- Chen, T., & Ren, J. (2023). *MFL-YOLO: An object detection model for damaged traffic signs*. arXiv. https://doi.org/10.48550/arXiv.2309.06750. Open-access article: https://arxiv.org/pdf/2309.06750.pdf
 
-Flores-Calero, M., Astudillo, C. A., Guevara, D., Maza, J., Lita, B. S., Defaz, B., Ante, J. S., Zabala-Blanco, D., & Armingol Moreno, J. M. (2024). Traffic sign detection and recognition using YOLO object detection algorithm: A systematic review. *Mathematics, 12*(2), 297. https://doi.org/10.3390/math12020297. Open-access article: https://www.mdpi.com/2227-7390/12/2/297/pdf
+- Flores-Calero, M., Astudillo, C. A., Guevara, D., Maza, J., Lita, B. S., Defaz, B., Ante, J. S., Zabala-Blanco, D., & Armingol Moreno, J. M. (2024). Traffic sign detection and recognition using YOLO object detection algorithm: A systematic review. *Mathematics, 12*(2), 297. https://doi.org/10.3390/math12020297. Open-access article: https://www.mdpi.com/2227-7390/12/2/297/pdf
 
 Zhang, F., Zhang, L., & Wang, Y. (2023). Extracting traffic signage by combining point clouds and images. *Sensors, 23*(4), 2262. https://doi.org/10.3390/s23042262. Open-access article: https://www.mdpi.com/1424-8220/23/4/2262/pdf
 
