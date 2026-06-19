@@ -1,0 +1,5 @@
+.env
+data/candidate_locations.csv
+data/streetview/
+__pycache__/
+*.pyc

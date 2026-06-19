@@ -12,13 +12,29 @@ This study proposes a multimodal methodology for detecting damaged street signs 
 
 # Methods
 
+This study will use a pilot-neighborhood workflow to develop and evaluate a prototype model before expanding to larger areas. The prototype will combine street-level imagery, LiDAR or point cloud data, and NYC DOT sign inventory records where available. The first pilot neighborhood will be selected based on imagery availability, point cloud coverage, visible street name signs, and the likelihood of observing multiple damage categories.
+
+The machine learning task will be treated as object detection plus multi-label damage classification. Each visible street name sign will be annotated with a bounding box, location metadata, and zero or more damage labels. Undamaged signs will be included as negative training examples, although the final prototype output will only return signs with detected damage. Damage categories will include missing signs, bent or damaged signs, old-design signs, faded signs, hanging signs, vandalized signs, signs facing the wrong direction, and incomplete intersections.
+
+The initial model will use a YOLO object detection workflow because YOLO supports bounding-box detection, confidence scores, and annotated visual outputs suitable for weekly demos and the August conference prototype. TensorFlow-based object detection models may be considered as an alternative or comparison path if required by the project team.
+
+The labeled dataset will be split into training and test sets using an 80/20 split. Images from the same intersection or sign location should be kept in the same split when possible to reduce data leakage. Model outputs will be evaluated for sign detection, damage-label accuracy, false positives, and location quality. Confidence intervals will be reported when the test sample size is large enough to make them meaningful.
+
 # Analysis and Results
+
+The first analysis will report progress on the pilot dataset and prototype model rather than citywide performance. Expected outputs include the number of labeled images, the number of annotated signs, the number of examples per damage category, and the number of undamaged negative examples.
+
+The model will produce annotated images and a CSV/table of damaged-sign detections. Each returned record should include the source image or point cloud record, estimated latitude and longitude, bounding box coordinates, damage labels, model confidence, and review notes. Signs with no detected damage will not be included in the final damaged-sign output table.
+
+Evaluation metrics will include detection performance, damage-label precision and recall, and a qualitative review of location accuracy. The analysis will also identify categories with insufficient examples so the scope can expand as more data are collected.
 
 # Discussion and Conclusions
 
 This methodology presents a scalable framework for automated street sign damage detection using multimodal geospatial and computer vision data sources. By integrating NYC Open Data sign inventories, street-level imagery, LiDAR-derived point clouds, and YOLO26 deep learning models, the framework enables proactive and data-driven transportation asset management.
 
 The proposed workflow supports improved inspection efficiency, reduced operational costs, and enhanced roadway safety outcomes. The methodology further demonstrates the growing applicability of GeoAI and multimodal sensing technologies within transportation infrastructure management and smart city operations.
+
+The first conference prototype is expected to demonstrate feasibility rather than full production readiness. A successful August demo should show a small but complete pipeline from data selection and annotation to model inference and mapped or tabular damaged-sign outputs. Future work will expand the pilot area, increase the number of labeled examples, compare model families, and improve location estimation using point cloud geometry.
 
 # References
 
