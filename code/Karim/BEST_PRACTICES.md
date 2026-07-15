@@ -79,12 +79,64 @@ separate field instead). Reconciling the tool's categories with this list
 exactly is an open item, not resolved yet, flag inconsistencies rather than
 silently picking one convention.
 
+## Missing signs: how to find and capture them
+
+Unlike the other categories, there's no sign to photograph, so the heuristic
+comes from the SIMS record and intersection geometry, not from the image.
+
+- You already know exactly where a sign *should* be from the SIMS match
+  (which corner, which street). Go there and check whether it's actually
+  present.
+- Use the intersection-type field the tool already asks for as the real
+  detection logic: a 4-leg intersection should have 2 complete sign pairs, a
+  T-intersection needs 1, dog-legs have their own rule. Count what's
+  actually present against what that geometry expects. If the count comes up
+  short, the specific corner that's short a sign is your missing-sign flag,
+  this is the same rule-based logic the project scope describes for the
+  missing-sign business rules.
+- For the shot itself, skip the tight crop. Take a **wide contextual shot of
+  the pole/mounting point** where the sign should be, an empty bracket (if
+  visible) is stronger evidence of absence than a shot with no obvious
+  mounting hardware at all. The story here is told by the metadata (corner,
+  intersection type, SIMS order number), not by the image content, since
+  there's nothing to see.
+
+## Red flagged / wrong-direction signs: how to identify them
+
+This category is about readability from the expected approach, not the
+sign's physical condition.
+
+- Street name signs are meant to be legible to traffic approaching from the
+  cross street. Stand where that traffic would actually be and try to read
+  it head-on. If you have to walk around to the back to read it, or the
+  blade is turned edge-on to the street instead of facing traffic, that's
+  the tell.
+- A sign whose face points into a building, an alley, or away from the
+  intersection entirely is an unambiguous case.
+- The compass HUD can help here too: a street's grid orientation is roughly
+  known ahead of time, so a sign rotated well off the expected angle relative
+  to the street it names is a geometric flag, not just a visual gut call.
+
 ## Class balance
 
 Deliberately capture some of every damage category you care about, not just
 whatever's easiest to find, an imbalanced set biases the classifier. Capture
 some no-damage examples too, the model needs negatives, not just damage
 cases.
+
+**Tip: use Street View's historical imagery to find damaged examples when
+current imagery is mostly healthy signs.** DOT tends to repair the worst
+offenders over time, so a corridor walked today will often skew toward "no
+damage" even if damage was common there in the past. Google's Street View
+viewer shows a small clock/calendar icon when multiple historical captures
+exist for a location, letting you scroll back through past years, some of
+those older captures may show a sign that's since been replaced or repaired.
+This is genuinely useful for building out damaged-category training examples,
+but tag these captures clearly (a note like "historical, [approx year],
+condition may since be repaired") so nobody later mistakes them for a live
+report of current condition, the whole point of tying captures to a SIMS
+order number is that DOT can act on it, and an already-fixed sign isn't
+actionable.
 
 ## Image quality
 
