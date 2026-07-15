@@ -11,7 +11,7 @@ cropped image plus metadata (matched against SIMS sign records) for later
 YOLO training / SIMS reporting. Built because Google blocks headless/automated
 browser access to real Street View imagery (confirmed during development:
 bot detection degrades coverage for non-famous locations when driven by
-Playwright), so this is designed for a **human** to drive the browser
+Playwright), so this is designed for a user to drive the browser
 manually; the extension only automates capture and labeling.
 
 ## How to load it (do this first)
