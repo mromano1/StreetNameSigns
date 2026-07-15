@@ -1,6 +1,4 @@
-# Karim's code
-
-## Street Sign Capture Tool
+# Street Sign Capture Tool
 
 A browser extension for manually collecting labeled sign photos from Street
 View, matched against real NYC DOT SIMS sign records. Built as an interim

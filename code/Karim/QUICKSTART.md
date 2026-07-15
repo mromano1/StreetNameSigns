@@ -2,7 +2,7 @@
 
 **Status: not finished.** This is a working prototype for manually collecting
 labeled sign photos, not a polished tool. Expect rough edges. If something
-breaks, that's expected at this stage, not user error, flag it to Karim.
+breaks, that's expected at this stage, not user error, flag it to the project team.
 
 ## What this is
 
@@ -106,7 +106,7 @@ wrong-direction, hanging, and bent signs specifically).
 
 ## Questions / problems
 
-Message Karim directly rather than guessing, especially before changing the
-extension's data schema or damage categories, there's an open question about
-reconciling this tool's output with `data/annotations.csv` that needs a team
-decision, not a unilateral one.
+Raise it with the project team directly rather than guessing, especially
+before changing the extension's data schema or damage categories, there's an
+open question about reconciling this tool's output with
+`data/annotations.csv` that needs a team decision, not a unilateral one.
