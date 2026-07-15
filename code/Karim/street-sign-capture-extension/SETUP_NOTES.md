@@ -5,14 +5,12 @@ description: Context for Claude Code to re-set up the Street Sign Capture Chrome
 
 # Street Sign Capture extension, setup notes for Claude
 
-This is a Chrome extension (Manifest V3) for manually browsing Street View,
-clicking "Capture Sign," dragging a box around a damaged sign, and saving the
-cropped image plus metadata (matched against SIMS sign records) for later
-YOLO training / SIMS reporting. Built because Google blocks headless/automated
-browser access to real Street View imagery (confirmed during development:
-bot detection degrades coverage for non-famous locations when driven by
-Playwright), so this is designed for a **human** to drive the browser
-manually; the extension only automates capture and labeling.
+This is a Chrome extension (Manifest V3). A person browses Street View
+manually, clicks "Capture Sign," drags a box around a damaged sign, and the
+extension saves the cropped image plus metadata (matched against SIMS sign
+records) for later YOLO training / SIMS reporting. The extension automates
+the capture, cropping, and labeling steps; browsing Street View itself stays
+manual.
 
 ## How to load it (do this first)
 
@@ -186,9 +184,8 @@ something resolved in code.
 
 ## Testing approach (for Claude, if changes are needed)
 
-Real Google Maps Street View can't be reliably driven by Playwright (bot detection),
-so functional testing was done against a local `http.server` test page with a
-temporarily widened manifest copy (`host_permissions` and `content_scripts.matches`
-including `http://localhost/*`) in a scratch directory. Never commit that widened
-manifest back into this real extension folder. The production manifest here should
-only ever have `https://www.google.com/maps/*` in `content_scripts.matches`.
+Test against a local `http.server` test page with a temporarily widened manifest
+copy (`host_permissions` and `content_scripts.matches` including
+`http://localhost/*`) in a scratch directory. Never commit that widened manifest
+back into this real extension folder. The production manifest here should only
+ever have `https://www.google.com/maps/*` in `content_scripts.matches`.

@@ -10,14 +10,8 @@ A Chrome extension that lets you browse Google Street View by hand, click a
 button to grab a screenshot, drag a box around a damaged sign, and save the
 cropped image plus structured metadata (which street, which corner, damage
 type, intersection type) tied back to the real NYC DOT sign inventory record
-for that corner.
-
-It exists because automating Street View collection (scripted browser tools,
-the paid Static API) hits real limits: Google blocks automated/headless
-browser access to real imagery for most locations, and the Static API caps
-out at 640x640 resolution regardless of what you ask for. So this tool is
-built around a human doing the browsing and clicking, it only automates the
-capture, cropping, and labeling steps.
+for that corner. You do the browsing and clicking; the extension automates
+capture, cropping, and labeling.
 
 ## What it does NOT do yet
 
@@ -76,6 +70,14 @@ folder, there's no way for an extension to write anywhere else.
    repo, e.g. `data/streetview_captures/`
 3. Captures will land in `.../manual_capture/` under whatever folder you
    picked, plus a CSV manifest when you export one from the toolbar popup
+
+You can skip this step if you'd rather not change your Chrome settings right
+now, captures will just land in your regular Downloads folder instead, and
+you can move them into the repo by hand afterward. If you do skip it and
+change your default download folder some other time (even temporarily), set
+it back to your normal Downloads folder once you're done capturing, otherwise
+every other file you download later will quietly end up inside this repo
+folder too.
 
 ## 4. Using it
 
