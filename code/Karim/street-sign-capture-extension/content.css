@@ -1,0 +1,144 @@
+#ssc-launch-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 2147483000;
+  background: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 24px;
+  padding: 12px 20px;
+  font: 14px/1.2 Arial, sans-serif;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  cursor: pointer;
+}
+#ssc-launch-btn:hover { background: #1558b3; }
+
+#ssc-compass {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  z-index: 2147483000;
+  background: rgba(0,0,0,0.7);
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: white;
+  font: 11px Arial, sans-serif;
+}
+.ssc-compass-dial {
+  position: relative;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+.ssc-compass-tick {
+  position: absolute;
+  font-size: 9px;
+  font-weight: bold;
+  color: #ccc;
+  transform: translate(-50%, -50%);
+}
+.ssc-compass-tick-primary { color: #ff3b30; }
+.ssc-compass-tick-n  { top: 6px;  left: 34px; }
+.ssc-compass-tick-ne { top: 15px; left: 53px; }
+.ssc-compass-tick-e  { top: 34px; left: 62px; }
+.ssc-compass-tick-se { top: 53px; left: 53px; }
+.ssc-compass-tick-s  { top: 62px; left: 34px; }
+.ssc-compass-tick-sw { top: 53px; left: 15px; }
+.ssc-compass-tick-w  { top: 34px; left: 6px; }
+.ssc-compass-tick-nw { top: 15px; left: 15px; }
+.ssc-compass-needle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  height: 26px;
+  margin-left: -2px;
+  margin-top: -26px;
+  background: linear-gradient(to bottom, #ff3b30 50%, white 50%);
+  transform-origin: bottom center;
+}
+.ssc-compass-label { font-weight: bold; }
+
+#ssc-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483001;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: crosshair;
+}
+#ssc-overlay canvas { display: block; max-width: 100%; max-height: 100%; }
+
+#ssc-panel {
+  position: fixed;
+  z-index: 2147483002;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  padding: 16px;
+  bottom: 20px;
+  overflow-y: auto;
+  font: 13px/1.4 Arial, sans-serif;
+  width: 300px;
+}
+#ssc-panel h3 { margin: 0 0 8px; font-size: 15px; }
+#ssc-panel label { display: block; margin-top: 8px; font-weight: bold; }
+#ssc-panel input, #ssc-panel select, #ssc-panel textarea {
+  width: 100%; box-sizing: border-box; padding: 4px; margin-top: 2px;
+  font: inherit;
+}
+#ssc-panel .ssc-actions { margin-top: 12px; display: flex; gap: 8px; justify-content: flex-end; }
+#ssc-panel button { padding: 6px 14px; border-radius: 4px; border: none; cursor: pointer; font: inherit; }
+#ssc-panel .ssc-save { background: #1a73e8; color: white; }
+#ssc-panel .ssc-cancel { background: #eee; }
+
+.ssc-required { color: #c5221f; font-weight: bold; }
+
+.ssc-degree-override {
+  margin-top: 6px; padding: 6px 8px; background: #f5f5f5; border-radius: 6px;
+}
+.ssc-degree-override label {
+  margin-top: 0; font-weight: normal; font-size: 11px; color: #555;
+}
+.ssc-degree-override input { width: 80px !important; display: inline-block; }
+#ssc-corner-degree-result { font-size: 12px; font-weight: bold; margin-top: 4px; color: #1a73e8; }
+
+.ssc-btn-group {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px;
+  padding: 4px; border-radius: 8px; border: 2px solid transparent;
+}
+#ssc-panel .ssc-btn-group button {
+  padding: 7px 12px; border-radius: 14px; border: 2px solid #888;
+  background: #fff; font-size: 12px; font-weight: bold; color: #222;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}
+#ssc-panel .ssc-btn-group button:hover { border-color: #1a73e8; background: #eef4fe; }
+#ssc-panel .ssc-btn-group button.ssc-selected {
+  background: #1a73e8; color: white; border-color: #0d47a1;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.35);
+}
+.ssc-btn-group.ssc-group-error {
+  border-color: #c5221f;
+}
+
+#ssc-validation-error {
+  display: none;
+  color: #c5221f;
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: 8px;
+}
+#ssc-hint {
+  position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+  z-index: 2147483002; background: rgba(0,0,0,0.75); color: white;
+  padding: 8px 16px; border-radius: 6px; font: 13px Arial, sans-serif;
+}

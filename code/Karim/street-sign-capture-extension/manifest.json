@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Street Sign Capture",
+  "version": "1.0",
+  "description": "Capture a cropped Street View screenshot of a damaged sign, tagged with the nearest SIMS record.",
+  "permissions": ["activeTab", "downloads", "storage", "scripting"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.google.com/maps/*"],
+      "js": ["content.js"],
+      "css": ["content.css"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Street Sign Capture"
+  }
+}
