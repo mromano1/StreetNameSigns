@@ -45,6 +45,33 @@ missing, bent/damaged, old design (white border and/or all-caps), faded,
 hanging, vandalized, wrong-direction ("red flagged"), incomplete
 intersection.
 
+### Why "old design" is split into two labels here, not one
+
+The root README and `data/annotations.csv` treat "old design" as a single
+combined category (white border and all-caps together). This tool instead
+labels them as two independent categories, `white-border` and `all-caps`,
+on purpose, and this matters for whoever trains a YOLO model on this data,
+not just for capture:
+
+All-caps and white-border are two separate, unambiguous visual features. A
+labeler can say yes/no to each with high agreement. Lumping them into one
+"old design" category forces the model to learn a single decision boundary
+over signs that might have just one feature, just the other, or both, which
+is exactly the kind of within-class variance that produces a noisier, less
+precise classifier. Two clean binary labels generally train better than one
+composite label whenever the underlying features don't perfectly co-occur,
+and in practice they don't always co-occur here.
+
+If you need "old design" as a single category anywhere downstream (matching
+the README's language, a stakeholder demo, whatever), derive it as a rule
+after the fact: `old_design = all_caps OR white_border`. Keep the model's
+training labels split, since that's the better training signal, and compute
+the composite label in post-processing rather than baking it into what the
+model has to predict directly.
+
+This is still an open reconciliation point with the rest of the pipeline
+(see QUICKSTART.md), raise it before assuming either convention is final.
+
 Note: the capture tool currently has separate buttons for white-border and
 all-caps rather than one combined "old design" category, and doesn't have an
 incomplete-intersection button yet (it captures intersection *type" as a

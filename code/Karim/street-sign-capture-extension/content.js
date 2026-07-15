@@ -320,11 +320,13 @@
         ${fromStreetName ? `<button type="button" data-val="${fromStreetName}">${fromStreetName}</button>` : ''}
         <button type="button" data-val="not sure">Not sure</button>
       </div>
+      <input type="text" id="ssc-street-name-custom" placeholder="Or type the street name printed on the sign...">
       <label>Which corner is this sign on? <span class="ssc-required">*</span></label>
       <div id="ssc-corner-buttons" class="ssc-btn-group">
         ${cornerButtons}
         <button type="button" class="ssc-corner-btn${hasGuess ? '' : ' ssc-selected'}" data-key="none">Not sure</button>
       </div>
+      <input type="text" id="ssc-corner-custom" placeholder="Or type the corner directly (e.g. NE)...">
       <div class="ssc-degree-override">
         <label>None of those right? Type the heading you're facing (0-359°):</label>
         <input type="number" id="ssc-corner-degree" min="0" max="359" placeholder="e.g. 137">
@@ -363,12 +365,20 @@
 
     let selectedSignText = '';
     const streetNameButtons = panel.querySelectorAll('#ssc-street-name-buttons button');
+    const streetNameCustomInput = panel.querySelector('#ssc-street-name-custom');
     streetNameButtons.forEach((b) => {
       b.addEventListener('click', () => {
         selectedSignText = b.dataset.val;
         streetNameButtons.forEach((other) => other.classList.remove('ssc-selected'));
         b.classList.add('ssc-selected');
+        streetNameCustomInput.value = '';
       });
+    });
+    streetNameCustomInput.addEventListener('input', () => {
+      const typed = streetNameCustomInput.value.trim();
+      if (!typed) return;
+      selectedSignText = typed;
+      streetNameButtons.forEach((other) => other.classList.remove('ssc-selected'));
     });
 
     let selectedIntersectionType = '';
@@ -393,18 +403,32 @@
 
     let selectedCorner = hasGuess ? guess : 'none';
     const cornerButtonEls = panel.querySelectorAll('#ssc-corner-buttons button');
+    const cornerCustomInput = panel.querySelector('#ssc-corner-custom');
+    const degreeInput = panel.querySelector('#ssc-corner-degree');
+    const degreeResult = panel.querySelector('#ssc-corner-degree-result');
+
     cornerButtonEls.forEach((b) => {
       b.addEventListener('click', () => {
         selectedCorner = b.dataset.key;
         cornerButtonEls.forEach((other) => other.classList.remove('ssc-selected'));
         b.classList.add('ssc-selected');
+        cornerCustomInput.value = '';
         degreeInput.value = '';
         degreeResult.textContent = '';
       });
     });
 
-    const degreeInput = panel.querySelector('#ssc-corner-degree');
-    const degreeResult = panel.querySelector('#ssc-corner-degree-result');
+    cornerCustomInput.addEventListener('input', () => {
+      const typed = cornerCustomInput.value.trim().toUpperCase();
+      if (!typed) return;
+      selectedCorner = typed;
+      cornerButtonEls.forEach((other) => other.classList.remove('ssc-selected'));
+      const matchingBtn = Array.from(cornerButtonEls).find((b) => b.dataset.key === typed);
+      if (matchingBtn) matchingBtn.classList.add('ssc-selected');
+      degreeInput.value = '';
+      degreeResult.textContent = '';
+    });
+
     degreeInput.addEventListener('input', () => {
       const deg = parseFloat(degreeInput.value);
       if (Number.isNaN(deg) || deg < 0 || deg > 359) {
@@ -413,6 +437,7 @@
       }
       const corner = cornerFromTypedDegree(deg);
       selectedCorner = corner;
+      cornerCustomInput.value = '';
       cornerButtonEls.forEach((other) => other.classList.remove('ssc-selected'));
       const matchingBtn = Array.from(cornerButtonEls).find((b) => b.dataset.key === corner);
       if (matchingBtn) matchingBtn.classList.add('ssc-selected');
