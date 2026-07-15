@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body { font: 13px/1.4 Arial, sans-serif; width: 220px; padding: 12px; }
+      h3 { margin: 0 0 8px; font-size: 14px; }
+      button { width: 100%; padding: 8px; margin-top: 6px; border: none; border-radius: 4px; cursor: pointer; font: inherit; }
+      .primary { background: #1a73e8; color: white; }
+      .danger { background: #fce8e6; color: #c5221f; }
+      #count { font-size: 24px; font-weight: bold; }
+    </style>
+  </head>
+  <body>
+    <h3>Street Sign Capture</h3>
+    <div id="count">0</div>
+    <div>captures this session</div>
+    <button id="export" class="primary">Export CSV</button>
+    <button id="clear" class="danger">Clear all</button>
+    <script src="popup.js"></script>
+  </body>
+</html>
