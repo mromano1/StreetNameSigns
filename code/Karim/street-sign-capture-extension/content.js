@@ -56,19 +56,39 @@
     `;
     document.body.appendChild(hud);
 
+    const oobWarning = document.createElement('div');
+    oobWarning.id = 'ssc-oob-warning';
+    oobWarning.textContent = "Outside your loaded SIMS data area, this corner won't have a sign match";
+    document.body.appendChild(oobWarning);
+
     const needle = hud.querySelector('.ssc-compass-needle');
     const label = hud.querySelector('.ssc-compass-label');
+
+    function refreshOobWarning(loc) {
+      if (!signsData || !signsData.corners) {
+        oobWarning.style.display = 'none';
+        return;
+      }
+      oobWarning.style.display = isOutOfBounds(loc, signsData.corners) ? 'block' : 'none';
+    }
 
     function update() {
       const loc = parseLocationFromUrl();
       if (!loc) {
         hud.style.display = 'none';
+        oobWarning.style.display = 'none';
         return;
       }
       hud.style.display = 'flex';
       const gridHeading = toGridHeading(loc.heading);
       needle.style.transform = `rotate(${gridHeading}deg)`;
       label.textContent = `grid ${gridCompassLabel(gridHeading)}`;
+
+      if (signsData) {
+        refreshOobWarning(loc);
+      } else {
+        loadSignsData().then(() => refreshOobWarning(loc));
+      }
     }
     update();
     setInterval(update, 400);
@@ -136,6 +156,12 @@
     return groups;
   }
 
+  // Rough threshold for "you've wandered outside the loaded SIMS data area."
+  // ~0.004 degrees is about 400m, comfortably bigger than corner-to-corner
+  // spacing along a worked avenue but small enough to catch a real departure
+  // from the loaded ZIP's coverage.
+  const MAX_MATCH_DISTANCE_DEG = 0.004;
+
   function nearestCorner(lat, lon, corners) {
     let best = null;
     let bestD = Infinity;
@@ -146,7 +172,14 @@
         best = c;
       }
     }
+    if (best) best._distanceDeg = Math.sqrt(bestD);
     return best;
+  }
+
+  function isOutOfBounds(loc, corners) {
+    if (!corners || !corners.length) return true;
+    const match = nearestCorner(loc.lat, loc.lon, corners);
+    return !match || match._distanceDeg > MAX_MATCH_DISTANCE_DEG;
   }
 
   function makeButton() {
@@ -287,6 +320,15 @@
     preview.style.borderRadius = '4px';
     panel.appendChild(preview);
 
+    const outOfBounds = !match || match._distanceDeg > MAX_MATCH_DISTANCE_DEG;
+    if (outOfBounds) {
+      const warn = document.createElement('div');
+      warn.id = 'ssc-panel-oob-warning';
+      warn.textContent =
+        "This location is outside your loaded SIMS data area, there's no reliable sign match. Saving will still work, but without a real SIMS order number.";
+      panel.appendChild(warn);
+    }
+
     const cornerGroups = match ? groupSignsByCorner(match.signs) : {};
     const cornerKeys = Object.keys(cornerGroups);
     const guess = loc ? compassGuessFromHeading(loc.heading) : null;
@@ -391,13 +433,33 @@
       });
     });
 
-    let selectedDamage = '';
+    // Multi-select: a sign can have more than one issue (faded AND vandalized,
+    // for example), so damage buttons toggle independently, except "no damage,"
+    // which is mutually exclusive with every real damage category.
+    let selectedDamages = [];
     const damageButtons = panel.querySelectorAll('#ssc-damage-buttons button');
     damageButtons.forEach((b) => {
       b.addEventListener('click', () => {
-        selectedDamage = b.dataset.val;
-        damageButtons.forEach((other) => other.classList.remove('ssc-selected'));
-        b.classList.add('ssc-selected');
+        const val = b.dataset.val;
+        if (val === 'no damage') {
+          selectedDamages = ['no damage'];
+          damageButtons.forEach((other) => other.classList.remove('ssc-selected'));
+          b.classList.add('ssc-selected');
+          return;
+        }
+        // picking a real damage category cancels "no damage" if it was active
+        const noDamageBtn = Array.from(damageButtons).find((btn) => btn.dataset.val === 'no damage');
+        if (selectedDamages.includes('no damage')) {
+          selectedDamages = [];
+          if (noDamageBtn) noDamageBtn.classList.remove('ssc-selected');
+        }
+        if (selectedDamages.includes(val)) {
+          selectedDamages = selectedDamages.filter((d) => d !== val);
+          b.classList.remove('ssc-selected');
+        } else {
+          selectedDamages.push(val);
+          b.classList.add('ssc-selected');
+        }
       });
     });
 
@@ -454,7 +516,7 @@
       const missing = [];
       if (!selectedSignText) missing.push({ label: 'street name', group: streetNameButtons });
       if (!selectedIntersectionType) missing.push({ label: 'intersection type', group: intersectionButtons });
-      if (!selectedDamage) missing.push({ label: 'damage category', group: damageButtons });
+      if (!selectedDamages.length) missing.push({ label: 'damage category', group: damageButtons });
       // corner always has a value (guess or "none"), included for completeness/consistency
       if (!selectedCorner) missing.push({ label: 'corner', group: cornerButtonEls });
 
@@ -488,7 +550,7 @@
         order_numbers: pickedSigns.map((s) => s.order_number).join(';'),
         sign_codes: pickedSigns.map((s) => s.sign_code).join(';'),
         supports: pickedSigns.map((s) => s.support).join(';'),
-        damage_category: selectedDamage,
+        damage_category: selectedDamages.join(';'),
         notes: panel.querySelector('#ssc-notes').value,
       };
 
