@@ -1,0 +1,138 @@
+/* Adapted from ../extension/content.css's overlay/panel styling, minus
+   anything Chrome-extension-specific (fixed positioning over a live page,
+   the floating capture button, the compass HUD). */
+
+body {
+  margin: 0;
+  font-family: -apple-system, Segoe UI, Roboto, sans-serif;
+  background: #1e1e1e;
+  color: #eee;
+}
+
+#ssc-topbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 16px;
+  background: #2a2a2a;
+  border-bottom: 1px solid #444;
+}
+
+#ssc-progress {
+  font-size: 13px;
+  color: #aaa;
+}
+
+#ssc-topbar button {
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+#ssc-prev, #ssc-next, #ssc-zoom-out, #ssc-zoom-in { background: #444; color: #eee; }
+#ssc-export { background: #1f7a3f; color: #fff; margin-left: auto; }
+
+#ssc-dataset-select {
+  min-width: 160px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid #555;
+  background: #333;
+  color: #eee;
+  font-size: 13px;
+}
+
+#ssc-zoom { display: flex; align-items: center; gap: 6px; }
+#ssc-zoom-level { font-size: 12px; color: #aaa; min-width: 38px; text-align: center; }
+
+#ssc-main {
+  display: flex;
+  height: calc(100vh - 48px);
+}
+
+#ssc-canvas-wrap {
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  background: #111;
+  cursor: crosshair;
+}
+
+#ssc-canvas-wrap canvas {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+#ssc-tight-crop-preview {
+  display: none;
+  max-width: 90%;
+  margin: 16px auto;
+  border: 2px solid #4a9eff;
+  border-radius: 4px;
+}
+#ssc-tight-crop-preview.ssc-visible { display: block; }
+
+#ssc-panel {
+  width: 320px;
+  padding: 16px;
+  overflow-y: auto;
+  background: #262626;
+  border-left: 1px solid #444;
+}
+
+#ssc-panel h3 { margin-top: 0; font-size: 15px; }
+#ssc-heading { margin: -6px 0 14px; font-size: 12px; color: #aaa; }
+
+#ssc-box-list { list-style: none; padding: 0; margin: 0 0 12px; }
+#ssc-box-list li {
+  padding: 6px 8px;
+  border: 1px solid #444;
+  border-radius: 4px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  font-size: 12px;
+}
+#ssc-box-list li.ssc-active { border-color: #4a9eff; background: #1c2733; }
+#ssc-box-list li .ssc-box-remove { float: right; color: #f66; cursor: pointer; }
+
+#ssc-panel label { display: block; margin: 10px 0 4px; font-size: 12px; color: #bbb; }
+#ssc-panel select, #ssc-panel textarea, #ssc-panel input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px;
+  background: #1a1a1a;
+  border: 1px solid #444;
+  color: #eee;
+  border-radius: 4px;
+}
+
+.ssc-btn-group { display: flex; flex-wrap: wrap; gap: 6px; }
+.ssc-btn-group button {
+  padding: 5px 9px;
+  border-radius: 4px;
+  border: 2px solid #555;
+  background: #333;
+  color: #eee;
+  cursor: pointer;
+  font-size: 12px;
+}
+.ssc-btn-group button.ssc-selected { border-color: #4a9eff; background: #1c2733; }
+.ssc-btn-group button.ssc-suggested { border-style: dashed; }
+
+#ssc-panel .ssc-save {
+  margin-top: 14px;
+  width: 100%;
+  padding: 8px;
+  background: #1f7a3f;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#ssc-no-box { color: #888; font-size: 13px; }

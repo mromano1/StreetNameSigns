@@ -1,0 +1,57 @@
+# Third-party packages actually imported by this package's included
+# scripts (see PIPELINE_SCRIPT_NAMES in build_full_pipeline_package.py).
+# Verified by reading each file's real import statements, same method
+# dist/partner-package/backend/requirements.txt documents -- no
+# environment.yml/conda env export, no unrelated packages.
+#
+# No versions are pinned since none were pinned in the source project;
+# install the latest versions unless you hit a compatibility issue.
+
+requests
+python-dotenv
+uvicorn
+fastapi
+pydantic
+Pillow
+ultralytics
+torch
+opencv-python
+folium
+matplotlib
+pyshp
+pyproj
+pandas
+shapely
+pgeocode
+PyYAML
+
+# Never a Python "import" statement in any included script, so grepping
+# import statements alone misses it -- but serve_physical_model.py's
+# `UploadFile = File(...)` /predict endpoint needs it at runtime (FastAPI
+# checks for it eagerly at route-registration time, not just per-request).
+# Real gap found and fixed during Task 4's real build: without this, even
+# importing serve_physical_model.py to register its routes raises
+# RuntimeError, which fails the packaged test suite before a single test
+# body runs.
+python-multipart
+
+# Test-only, not imported by the pipeline itself -- but the README's own
+# "Verifying your setup" step tells the recipient to run `pytest` (real
+# gap found and fixed during Task 4's real build: without these,
+# ..\venv\Scripts\pytest wouldn't exist and that instruction would fail).
+# httpx is fastapi.testclient.TestClient's own required dependency
+# (used by test_serve_tight_crop.py/test_serve_physical_model.py).
+pytest
+httpx
+
+# Also test-only -- test_report_physical.py's _fake_result() helper imports
+# this inside a function body (not a top-level `import` line), so a plain
+# grep of top-of-file imports misses it. Real gap found by this package's
+# own drift-detection test (test_requirements_txt_has_no_drift_from_real_
+# top_level_imports in test_build_full_pipeline_package.py), which walks
+# the full AST rather than just the top of each file. Already a transitive
+# dependency of torch/opencv-python/pandas/matplotlib/ultralytics above, so
+# omitting it wouldn't actually break a real install -- listed explicitly
+# anyway so this requirements.txt stays an accurate declaration of what's
+# really imported, not just what happens to be pulled in as a side effect.
+numpy

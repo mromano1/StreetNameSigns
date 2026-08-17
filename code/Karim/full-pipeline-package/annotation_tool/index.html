@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Street Sign Annotation Tool</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="ssc-topbar">
+    <select id="ssc-dataset-select" title="Pulled dataset / neighborhood collection"></select>
+    <button id="ssc-prev">&larr; Prev</button>
+    <button id="ssc-next">Next &rarr;</button>
+    <div id="ssc-progress">Loading...</div>
+    <div id="ssc-zoom">
+      <button id="ssc-zoom-out" title="Zoom out">&minus;</button>
+      <span id="ssc-zoom-level">100%</span>
+      <button id="ssc-zoom-in" title="Zoom in">&plus;</button>
+    </div>
+    <button id="ssc-export">Export CSV</button>
+  </div>
+  <div id="ssc-main">
+    <div id="ssc-canvas-wrap">
+      <canvas id="ssc-canvas"></canvas>
+      <img id="ssc-tight-crop-preview" alt="Tight crop preview">
+    </div>
+    <div id="ssc-panel">
+      <h3>Boxes on this image</h3>
+      <p id="ssc-heading"></p>
+      <ul id="ssc-box-list"></ul>
+      <div id="ssc-box-editor"></div>
+      <button id="ssc-save" class="ssc-save">Save &amp; Next (Ctrl+Enter)</button>
+    </div>
+  </div>
+
+  <script src="annotate-core.js"></script>
+  <script src="queue.js"></script>
+  <script src="annotate.js"></script>
+</body>
+</html>

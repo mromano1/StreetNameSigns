@@ -1,0 +1,240 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Street Sign Capture -- Setup Notes (Developer)</title>
+    <style>
+      body {
+        font: 15px/1.6 Arial, sans-serif;
+        max-width: 820px;
+        margin: 40px auto;
+        padding: 0 24px 80px;
+        color: #202124;
+      }
+      h1 { font-size: 24px; margin-bottom: 4px; }
+      h2 {
+        font-size: 18px;
+        margin-top: 36px;
+        padding-top: 14px;
+        border-top: 1px solid #dadce0;
+      }
+      h3 { font-size: 15px; }
+      a { color: #1a73e8; }
+      code {
+        background: #f1f3f4;
+        padding: 1px 5px;
+        border-radius: 3px;
+        font-size: 13px;
+      }
+      pre {
+        background: #f1f3f4;
+        padding: 10px 14px;
+        border-radius: 6px;
+        overflow-x: auto;
+      }
+      pre code { background: none; padding: 0; }
+      ul, ol { padding-left: 22px; }
+      li { margin-bottom: 6px; }
+      hr { border: none; border-top: 1px solid #dadce0; margin: 24px 0; }
+    </style>
+  </head>
+  <body>
+<h1>Street Sign Capture extension, setup notes for Claude</h1>
+<p>This is a Chrome extension (Manifest V3). A person browses either Google
+Street View or Cyclomedia Street Smart manually, clicks "Capture Sign," drags
+a box around a damaged sign, and the extension saves the cropped image plus
+metadata (matched against SIMS sign records) for later YOLO training / SIMS
+reporting. The extension automates the capture, cropping, and labeling steps;
+browsing the imagery itself stays manual.</p>
+<p>For non-technical end users trying this out (not developing on it), point
+them at <a href="INSTALL_GUIDE.html">INSTALL_GUIDE.html</a> and <a href="USER_GUIDE.html">USER_GUIDE.html</a> in this folder instead of this
+file — those assume no Claude access and no technical background. This file
+is Claude/developer-facing context for re-setting up and modifying the
+extension.</p>
+<h2>How to load it (do this first)</h2>
+<ol>
+<li>Open <code>chrome://extensions</code></li>
+<li>Enable <strong>Developer mode</strong> (top right toggle)</li>
+<li>Click <strong>Load unpacked</strong>, select this folder</li>
+<li><strong>After any edit to these files, you must click the reload icon (⟳) on the
+   extension's card.</strong> Chrome does not hot-reload unpacked extensions.</li>
+</ol>
+<h2>One-time Chrome settings (so files land inside the project, not system Downloads)</h2>
+<p>Chrome's <code>downloads</code> API can only save inside the browser's default download
+directory, no extension can write to an arbitrary path. So:</p>
+<ol>
+<li><code>chrome://settings/downloads</code></li>
+<li>Set the default location to the project's <code>ML Project/data/raw_images/zip_10001/</code>
+   folder (adjust path per machine/zip code)</li>
+<li>Captures land in <code>.../zip_10001/manual_capture/&lt;timestamp&gt;_&lt;street&gt;.jpg</code>, and the
+   popup's "Export CSV" button lands a manifest in the same subfolder.</li>
+</ol>
+<h2>Local model server (for the live damage-guess + retrain feature)</h2>
+<p>Before capturing, start the inference server so the capture panel can show a
+live guess:</p>
+<pre><code>cd scripts
+/c/Users/karim/miniforge3/envs/sds/python.exe serve_physical_model.py
+</code></pre>
+<p>Leave that terminal running while capturing. It binds <code>127.0.0.1:8765</code> only
+(never exposed off this machine). If it's not running, the capture panel
+just falls back to fully manual damage-button selection -- no error, no
+blocker, the guess feature silently degrades. The popup's retrain-status
+line will say "unavailable" until the server is started.</p>
+<p>Clicking "Retrain now" in the popup (enabled once 10+ new labeled captures
+have accumulated since the last retrain) re-runs
+<code>notebooks/06_yolo_physical_pipeline.ipynb</code> end to end via <code>nbconvert</code> --
+same dataset prep, training, report, and shapefile steps as running the
+notebook by hand, just automated. It blocks the request until training
+finishes (can take a while); the executed notebook copy lands under
+<code>data/reports/retrain_runs/</code> for a record of what happened, and the trained
+model server itself needs restarting afterward to pick up the new
+checkpoint (it only loads the model once at startup).</p>
+<h2>Non-obvious bugs already hit and fixed, don't reintroduce these</h2>
+<ul>
+<li><strong><code>host_permissions</code> must be <code>"&lt;all_urls&gt;"</code>.</strong> A scoped permission like
+  <code>"https://www.google.com/maps/*"</code> looks like it should be enough for
+  <code>chrome.tabs.captureVisibleTab</code>, and Chrome will happily load the extension with it,
+  but the API call fails at runtime with <code>"Either the '&lt;all_urls&gt;' or 'activeTab'
+  permission is required."</code> This is because <code>captureVisibleTab</code> specifically only
+  accepts <code>&lt;all_urls&gt;</code> or <code>activeTab</code>. <code>activeTab</code> doesn't work either, since it only
+  activates on a <em>toolbar action</em> click, not a content-script-injected button (which is
+  what "Capture Sign" is). Confirmed via repeated live testing, don't "fix" this back
+  to a scoped permission, it will silently break capture again.</li>
+<li><strong>Don't add <code>web_accessible_resources</code> for <code>signs_data.json</code>.</strong> It's not needed.
+  The content script asks the background service worker for the data via
+  <code>chrome.runtime.sendMessage({type: 'get_signs_data'})</code>, and the service worker reads
+  the bundled JSON directly (service workers always have privileged access to their
+  own extension's files, no cross-origin exposure needed). Adding a
+  <code>web_accessible_resources</code> entry for this earlier caused a
+  <code>"failed to load extension: invalid value for web accessible resource"</code> error and
+  broke the whole extension load. Just leave this out.</li>
+<li>The red selection-box outline used to bleed into the saved crop (the stroke was
+  painted on the same canvas the crop was cut from). Fixed in <code>content.js</code> by
+  repainting the clean screenshot onto the canvas immediately before cropping. If you
+  ever refactor the drag-select code, keep that repaint step.</li>
+<li><strong>CSS specificity gotcha</strong>: a pre-existing rule <code>#ssc-panel button { border: none }</code>
+  (ID selector) silently overrides class-based button styling like <code>.ssc-btn-group
+  button { border: 2px solid ... }</code> no matter what order they're declared in. If you
+  ever restyle the panel buttons and the changes don't seem to apply, this is why.
+  Scope the new rule as <code>#ssc-panel .ssc-btn-group button</code> to out-specificity it (this
+  is what <code>content.css</code> already does; don't remove that prefix).</li>
+<li><strong><code>ssc-guess-hint</code> vs <code>ssc-selected</code> on the same button</strong>: clicking a damage button
+  toggles <code>ssc-selected</code> but never removes <code>ssc-guess-hint</code> (<code>content.js</code>'s damage
+  button click handler). Both classes have equal specificity, so whichever rule comes
+  later in <code>content.css</code> wins for a button carrying both — <code>.ssc-guess-hint</code> is scoped
+  <code>:not(.ssc-selected)</code> specifically so a confirmed selection always looks selected
+  (blue) rather than reverting to the amber hint look. Don't drop that <code>:not()</code> when
+  touching this styling.</li>
+</ul>
+<h2><code>sign_location</code> code meanings (confirmed against an official NYC DOT data dictionary)</h2>
+<p><code>Data_Dictionary-ParkingRegulationLocationsandSigns.xlsx</code> (project root) documents the
+<code>sign_location</code> field for a sibling SIMS dataset (note: that dataset explicitly
+excludes street name signs, so treat this as strong-but-not-100%-certain evidence for
+the actual Street Sign Work Orders data, not a guaranteed exact match). Per that
+dictionary, <code>sign_location</code> distinguishes real <strong>corner</strong> placements from
+non-corner placements:</p>
+<ul>
+<li>Corners (map to a compass direction): <code>N/E C</code> = Northeast Corner, <code>N/W C</code>, <code>S/E C</code>,
+  <code>S/W C</code> (diagonal), and <code>N C</code>/<code>N CURB</code>, <code>E C</code>/<code>E CURB</code>, <code>S C</code>/<code>S CURB</code>, <code>W C</code>/<code>W CURB</code>
+  (single-cardinal corner, some intersections have a corner best described by one
+  direction, not a diagonal, e.g. T-intersections).</li>
+<li>NOT corners (median/mall/apex/island/offset-from-side, don't map these to a
+  compass direction): <code>CML</code> (Center Mall), <code>MALL</code>/<code>MAL</code> (Mall), <code>MEDIAN</code>/<code>MED</code>
+  (Median), <code>ISL</code> (Island), <code>APEX</code>/<code>APX</code>/<code>APEXI</code> (Apex of Intersection), and compound
+  codes like <code>N WSD</code> ("north of the intersection, on the west side") / <code>E SSD</code>
+  ("east of the intersection, on the south side") which describe a sign offset along
+  a side, not sitting at a corner at all. <code>CEN MED</code> (center median) and <code>*NOTE</code> (a
+  data annotation) also aren't corners.</li>
+</ul>
+<p><code>compassFromSignLocation()</code> in <code>content.js</code> implements exactly this split, verified
+against every real distinct <code>sign_location</code> value in <code>signs_zip_10001.csv</code> (26 unique
+values, all classify as expected: 4 diagonal + 4 single-cardinal corners map to a
+direction, the other 18 correctly fall through to unclassified/"other"). If you
+regenerate <code>signs_data.json</code> for a new zip code and something looks off in the corner
+picker, re-run that same value_counts check against the new CSV before assuming the
+regex is wrong, it might be a genuinely new code format not in this list yet.</p>
+<h2>Panel fields (as of the current build)</h2>
+<p>The confirmation panel has four <strong>required</strong> button-group answers (street name,
+intersection type, corner, damage category) plus optional notes. "Required" is
+enforced in the Save click handler in <code>content.js</code>, it blocks the save, shows a red
+message in <code>#ssc-validation-error</code>, and outlines the incomplete <code>.ssc-btn-group</code>
+elements in red. Corner picker also has a manual override: a "type a heading in
+degrees" input that maps any 0-359 value to NE/SE/SW/NW via a pre-built 2-degree
+resolution lookup table (<code>DEGREE_TABLE</code>/<code>cornerFromTypedDegree</code>), for when the
+auto-guessed buttons (derived from <code>loc.heading</code> in the URL) don't match what's
+actually in view. Street name and corner also have plain write-in text boxes as a
+further fallback. If you add another required category, follow the same pattern:
+track a <code>selectedX</code> variable, add it to the <code>missing</code> array check in the save
+handler, and add its field to the <code>record</code> object.</p>
+<h2>Files</h2>
+<ul>
+<li><code>manifest.json</code>: MV3 manifest. <code>host_permissions: ["&lt;all_urls&gt;"]</code>,
+  <code>content_scripts</code> scoped to <code>https://www.google.com/maps/*</code> <strong>and</strong>
+  <code>https://streetsmart.cyclomedia.com/*</code> (that's what controls where the
+  floating button appears, unrelated to the host_permissions requirement
+  above).</li>
+<li><code>background.js</code>: service worker. Handles <code>capture</code> (screenshot), <code>save</code> (download +
+  metadata to <code>chrome.storage.local</code>), and <code>get_signs_data</code> (serves the bundled JSON).</li>
+<li><code>content.js</code>: injected on Google Maps and Cyclomedia Street Smart. Floating capture
+  button, drag-to-crop overlay, the Manhattan-grid compass HUD (grid runs about 29
+  degrees east of true north, see <code>MANHATTAN_GRID_OFFSET</code>), nearest-corner SIMS
+  matching (lat/lon on Google Maps, State Plane <code>x_2263</code>/<code>y_2263</code> feet on Street
+  Smart — see [[project_street_sign_capture_extension]] memory for the Street Smart
+  parsing quirks), and the confirmation panel (corner picker, sign-text picker,
+  damage category buttons).</li>
+<li><code>content.css</code>: styling for all of the above.</li>
+<li><code>popup.html</code> / <code>popup.js</code>: toolbar popup showing session capture count, CSV export,
+  and a clear-all button.</li>
+<li><code>signs_data.json</code>: pre-built lookup table of unique sign corners, generated from
+  <code>StreetNameSigns/code/Karim/scripts/signs_zip_{ZIPs}.csv</code>. As of 2026-07-20 this
+  covers zips <code>11237, 11206, 11221, 11385</code> (Bushwick/Ridgewood/Glendale), not zip
+  10001 — check the top-level <code>"zip"</code> field in the file itself before assuming
+  coverage, it changes whenever someone regenerates it for a different area.
+  Structure: <code>{zip: [ZIP, ...], corners: [{corner_id, on_street, from_street,
+  latitude, longitude, x_2263, y_2263, signs: [{order_number, sign_code,
+  sign_location, support}]}]}</code>. Corners are deduped by rounding lat/lon to 7
+  decimals; <code>signs</code> holds every raw SIMS order record at that exact corner (a
+  corner often has multiple, since multiple sign codes/supports/mount types get
+  installed at one intersection corner).</li>
+</ul>
+<h2>To regenerate <code>signs_data.json</code> for different zip codes</h2>
+<p>Both scripts live in <code>StreetNameSigns/code/Karim/scripts/</code> and take one or more ZIP
+codes as command-line arguments (same ZIPs for both, in the same order):</p>
+<pre><code>python 01_query_sims_by_zip.py &lt;ZIP_CODE&gt; [ZIP_CODE ...]
+python 02_generate_signs_data.py &lt;ZIP_CODE&gt; [ZIP_CODE ...]
+</code></pre>
+<p>The first pulls SIMS records into <code>signs_zip_{ZIPs}.csv</code>; the second converts that
+CSV into <code>signs_data.json</code> (multi-zip merge is built in, not a manual dict-keyed
+step — see [[project_signs_data_coverage_gap]] memory for why the multi-zip support
+was added and two other query-correctness bugs fixed alongside it). Copy the
+resulting <code>signs_data.json</code> into <strong>both</strong> <code>ML Project/extension/</code> and
+<code>StreetNameSigns/code/Karim/street-sign-capture-extension/</code> (see
+[[project_repo_and_credentials]] for why there are two copies), and also refresh
+<code>ML Project/street-sign-capture-extension.zip</code> (the packaged download handed to
+non-technical testers — see <a href="INSTALL_GUIDE.html">INSTALL_GUIDE.html</a>) so it isn't left pointing at stale
+data. There is no automated sync between these three; forgetting one is a real
+recurring failure mode (found stale 2026-07-27 after a demo).</p>
+<h2>Current capture route</h2>
+<p>Work is in progress through 6th Avenue in zip 10001, north to south, tracked in
+<code>ML Project/data/processed/capture_route_zip10001.csv</code> (51 corners, with
+<code>streetview_link</code> per row for direct clicking). As of this note, progress is around
+W 30th St (stop 33 of 51). Ask for current progress rather than assuming the CSV
+reflects the true state, it's a static route list, not a live tracker. Full street
+inventory for zip 10001 (628 corners, 47 street names) is in
+<code>ML Project/data/processed/signs_zip_10001.csv</code> for planning a route on a different
+avenue next (9th, 8th, and 7th Ave are the next-largest after 6th Ave).</p>
+<p>Also flagged but unresolved: about 15% of corners in zip 10001 (94 of 628) have signs
+coded with an <code>HD</code> suffix on <code>sign_code</code> (historic district, brown signs, not standard
+green), concentrated in the West Village. There's no <code>color</code> field in the SIMS data at
+all; <code>HD</code> in <code>sign_code</code> is the only proxy. The damage taxonomy (white-border,
+all-caps, etc.) was written assuming standard green signs, so whether or how to apply
+it to brown historic signs is an open question to raise with the DOT contacts, not
+something resolved in code.</p>
+<h2>Testing approach (for Claude, if changes are needed)</h2>
+<p>Test against a local <code>http.server</code> test page with a temporarily widened manifest
+copy (<code>host_permissions</code> and <code>content_scripts.matches</code> including
+<code>http://localhost/*</code>) in a scratch directory. Never commit that widened manifest
+back into this real extension folder. The production manifest here should only
+ever have <code>https://www.google.com/maps/*</code> in <code>content_scripts.matches</code>.</p>
+  </body>
+</html>

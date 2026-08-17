@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Street Sign Capture -- offscreen ONNX worker</title>
+  </head>
+  <body>
+    <!--
+      Empty on purpose. This page is never shown to the user -- it exists
+      only because onnxruntime-web's WASM backend uses a dynamic import()
+      internally (ort.wasm.min.js's blob-URL module loader), and import()
+      is banned inside ServiceWorkerGlobalScope per the HTML spec. A real
+      page/DOM context (this one) is where Chrome's offscreen-document API
+      lets that run. See offscreen.js and background.js's
+      ensureOffscreenDocument() for the message-relay side of this.
+    -->
+    <script src="vendor/onnxruntime-web/ort.wasm.min.js"></script>
+    <script src="onnx-predict.js"></script>
+    <script src="offscreen.js"></script>
+  </body>
+</html>

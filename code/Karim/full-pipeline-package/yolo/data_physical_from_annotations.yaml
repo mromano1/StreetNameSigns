@@ -1,0 +1,17 @@
+# YOLO dataset config for the Physical Condition model, trained on the
+# annotation tool's tight-crop imagery instead of the capture extension's
+# manual-capture manifests -- see data_physical.yaml for the deployed
+# model's own config, which this deliberately does NOT modify or replace.
+# Same class taxonomy as data_physical.yaml, so merging the two sources is
+# a class-compatible decision to make later, not blocked by this file.
+
+path: ../data/yolo_dataset_physical_from_annotations
+train: images/train
+val: images/val
+
+names:
+  0: old_design
+  1: faded
+  2: bent_damaged
+  3: hanging
+  4: vandalized

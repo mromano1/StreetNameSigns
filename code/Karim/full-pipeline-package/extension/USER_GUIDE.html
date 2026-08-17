@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Street Sign Capture -- User Guide</title>
+    <style>
+      body {
+        font: 15px/1.6 Arial, sans-serif;
+        max-width: 820px;
+        margin: 40px auto;
+        padding: 0 24px 80px;
+        color: #202124;
+      }
+      h1 { font-size: 24px; margin-bottom: 4px; }
+      h2 {
+        font-size: 18px;
+        margin-top: 36px;
+        padding-top: 14px;
+        border-top: 1px solid #dadce0;
+      }
+      h3 { font-size: 15px; }
+      a { color: #1a73e8; }
+      code {
+        background: #f1f3f4;
+        padding: 1px 5px;
+        border-radius: 3px;
+        font-size: 13px;
+      }
+      pre {
+        background: #f1f3f4;
+        padding: 10px 14px;
+        border-radius: 6px;
+        overflow-x: auto;
+      }
+      pre code { background: none; padding: 0; }
+      ul, ol { padding-left: 22px; }
+      li { margin-bottom: 6px; }
+      hr { border: none; border-top: 1px solid #dadce0; margin: 24px 0; }
+    </style>
+  </head>
+  <body>
+<h1>Using the Street Sign Capture tool</h1>
+<p>This guide walks through actually using the tool once it's installed (see
+<a href="INSTALL_GUIDE.html">INSTALL_GUIDE.html</a> if you haven't installed it yet). No technical background
+needed — this is just clicking buttons and filling in a short form.</p>
+<p><strong>What this tool does:</strong> as you browse street-level imagery (Cyclomedia
+Street Smart or Google Street View) and spot a damaged street name sign, it
+lets you draw a box around it, save that photo, and record a few details
+about the damage — all in a few clicks, without leaving your browser.</p>
+<h2>Before you capture anything</h2>
+<ol>
+<li>Log into Cyclomedia Street Smart yourself, the normal way (this tool
+   doesn't log you in — it just adds a button once you're already browsing).</li>
+<li>Navigate to wherever you want to look for damaged signs.</li>
+<li><strong>On Cyclomedia Street Smart specifically:</strong> click the <strong>ⓘ info icon</strong> in Street Smart's own interface at least once. This tool reads your position from that info panel -- without opening it, sign matching won't work at all, even though the Capture button still appears. (Google Street View doesn't need this step -- position is available automatically there.) If you forget, a yellow banner will remind you.</li>
+<li>Watch for a small compass icon in the corner of the screen — if it's
+   showing, the tool is active on this page and has a position to work with.</li>
+</ol>
+<h2>Capturing a sign, step by step</h2>
+<ol>
+<li><strong>Find a damaged sign</strong> in the street image and get it clearly in view.</li>
+<li>Click the floating <strong>"📷 Capture Sign"</strong> button.</li>
+<li>The screen dims slightly. <strong>Click and drag a box</strong> tightly around just the
+   damaged sign (not the whole street scene).</li>
+<li>Release the mouse. A panel opens on the right side asking you to confirm
+   a few details about what you captured.</li>
+<li>Fill in the panel (see field-by-field notes below), then click <strong>Save</strong>.</li>
+<li>Repeat for the next sign you find.</li>
+</ol>
+<p>If you started dragging a box by mistake, press <strong>Esc</strong> or just click
+somewhere without dragging to cancel it.</p>
+<h2>The confirmation panel, field by field</h2>
+<ul>
+<li><strong>On street / From street</strong> — usually auto-filled from nearby city sign
+  records. Double check these against what's actually on the sign; edit the
+  text boxes if they're wrong.</li>
+<li><strong>Which street name is printed on this sign?</strong> <em>(required)</em> — click the
+  matching button, or type it yourself in the box below if neither button
+  matches or you're not sure. This is what's physically printed on the sign
+  you captured, which is not always the same as "On street"/"From street."</li>
+<li><strong>Which corner is this sign on?</strong> <em>(required)</em> — click the compass
+  direction that matches (the tool takes its best guess and marks it
+  "likely"). If none look right, you can either type a corner directly (like
+  "NE") or type the compass heading you're facing in degrees, and it'll pick
+  the closest corner for you. If you're unsure, click "Not sure."</li>
+<li><strong>Intersection type</strong> <em>(required)</em> — is this a normal 4-way crossing, a
+  T-shaped intersection, an offset ("dog-leg") intersection, or something
+  more unusual ("Complicated")? Pick "Not sure" if you can't tell.</li>
+<li><strong>Damage category</strong> <em>(required)</em> — click every category that applies (you
+  can pick more than one, e.g. a sign can be both faded and vandalized).
+  Click "No damage" if the sign is actually fine — this one cancels out any
+  other damage selections, since a sign can't be both damaged and not
+  damaged.</li>
+<li><strong>Notes</strong> <em>(optional)</em> — anything else worth mentioning in your own words.</li>
+</ul>
+<p>Required fields are marked with a red <strong>*</strong>. If you try to save without
+filling them in, the tool will show a message and highlight what's missing —
+nothing is lost, just fill in the missing pieces and click Save again.</p>
+<h2>About the "outside your loaded SIMS data area" message</h2>
+<p>Sometimes you'll see a small warning saying the location is outside the
+loaded data area. <strong>This is not an error and doesn't mean anything is
+broken.</strong> It just means the tool doesn't have city sign records loaded for
+that specific spot, so it can't auto-fill the street names for you. You can
+still capture and save the sign normally — just fill in the street name
+yourself by typing what's printed on the sign. If you see this message in an
+area you'd expect to be covered, mention it to Karim along with the location
+— he's actively tracking reports like that.</p>
+<h2>Checking your progress and getting your data out</h2>
+<p>Click the extension's icon in the Chrome toolbar (the pin icon from the
+install guide) to open a small popup:</p>
+<ul>
+<li><strong>Count</strong> — how many signs you've captured (persists across restarts, not just this session).</li>
+<li><strong>Export CSV</strong> — downloads a spreadsheet listing every sign you've
+  captured, with all the details you entered.</li>
+<li><strong>Clear all</strong> — erases everything captured this session. There's no undo,
+  so only use this if you mean to start over, or if Karim asks you to.</li>
+</ul>
+<p>Captured photos and the exported CSV save to your normal Downloads folder,
+like any other file downloaded in Chrome, with the date/time and street name
+in the filename.</p>
+<h2>Questions or something looks wrong?</h2>
+<p>Contact Karim — screenshots of anything unexpected are especially helpful.</p>
+  </body>
+</html>

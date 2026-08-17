@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Street Sign Capture -- Pulling More Data</title>
+    <style>
+      body {
+        font: 15px/1.6 Arial, sans-serif;
+        max-width: 720px;
+        margin: 40px auto;
+        padding: 0 24px 80px;
+        color: #202124;
+      }
+      h1 { font-size: 22px; margin-bottom: 4px; }
+      h2 { font-size: 17px; margin-top: 32px; }
+      .note {
+        background: #e8f0fe;
+        border-radius: 8px;
+        padding: 14px 18px;
+        margin: 16px 0;
+        color: #174ea6;
+      }
+      .warn {
+        background: #fef7e0;
+        border-radius: 8px;
+        padding: 14px 18px;
+        margin: 16px 0;
+        color: #7a5c00;
+      }
+      code, pre {
+        background: #f1f3f4;
+        border-radius: 4px;
+        font-size: 13.5px;
+      }
+      code { padding: 1px 5px; }
+      pre { padding: 10px 14px; overflow-x: auto; }
+      ol, ul { padding-left: 22px; }
+      li { margin-bottom: 6px; }
+    </style>
+  </head>
+  <body>
+    <h1>Pulling more sign data</h1>
+    <p>
+      The extension's SIMS matching only works inside the zip codes already
+      bundled with it (see the welcome page for the exact list). Extending
+      coverage to more zip codes means pulling fresh records from NYC's
+      public Open Data portal and regenerating <code>signs_data.json</code>.
+    </p>
+
+    <div class="note">
+      This queries <code>data.cityofnewyork.us</code> directly -- it's a
+      public dataset, no login, no API key, no private Cyclomedia or SIMS
+      credentials involved.
+    </div>
+
+    <div class="warn">
+      <strong>Requires Python.</strong> This is a developer-facing capability,
+      not something to run from the extension itself. If you don't have
+      Python set up, ask Karim to run this for you instead of installing it
+      just for this.
+    </div>
+
+    <h2>What you need</h2>
+    <ul>
+      <li>Python 3</li>
+      <li>The packages <code>pandas</code>, <code>pgeocode</code>, <code>requests</code>, <code>pyproj</code> installed
+        (already covered by <code>requirements.txt</code> if you're using the developer/partner package)</li>
+    </ul>
+
+    <h2>Easiest way: the .bat script</h2>
+    <p>
+      From the folder containing <code>pull_more_sims_data.bat</code>, run:
+    </p>
+    <pre>pull_more_sims_data.bat 10001 10003</pre>
+    <p>
+      Pass <strong>every</strong> zip code you want covered, not just a new
+      one -- this always rebuilds <code>signs_data.json</code> from scratch
+      for exactly the zip codes given, it does not merge with whatever's
+      there already. If you're adding zip 10002 to the existing bundled
+      area, include all of the existing zips too, not just 10002.
+    </p>
+
+    <h2>Manual steps (what the .bat script does)</h2>
+    <ol>
+      <li>
+        <code>python 01_query_sims_by_zip.py &lt;ZIP&gt; [ZIP ...]</code> --
+        queries NYC Open Data's Street Sign Work Orders dataset for each zip
+        code (a 1-mile radius around its centroid) and saves the results to
+        a CSV.
+      </li>
+      <li>
+        <code>python 02_generate_signs_data.py &lt;ZIP&gt; [ZIP ...]</code> --
+        converts that CSV into <code>signs_data.json</code>, overwriting the
+        extension's bundled data.
+      </li>
+    </ol>
+
+    <h2>After regenerating</h2>
+    <ol>
+      <li>Reload the extension in <code>chrome://extensions</code>, then refresh any open Street Smart/Maps tabs.</li>
+      <li>
+        If you're rebuilding a shareable package, update
+        <code>EXPECTED_ZIPS</code> in <code>build_extension_package.py</code>
+        to match the new zip list -- the build script hard-fails on a
+        mismatch, by design, so a stale package can't ship silently.
+      </li>
+      <li>
+        Consider regenerating the coverage-area shapefile too (see the
+        welcome page's data-extent section), so it still matches what's
+        actually bundled:
+        <pre>python build_sims_data_hull.py path\to\extension\signs_data.json</pre>
+        Passing the path explicitly avoids guessing at where
+        <code>extension/</code> sits relative to this script in your
+        particular copy of the project.
+      </li>
+    </ol>
+  </body>
+</html>

@@ -1,0 +1,16 @@
+# YOLO dataset config for the Physical Condition model -- a subset of the
+# full damage taxonomy (see ../yolo/data.yaml), scoped to defects on a sign
+# that is physically present. Intersection-rule issues (missing sign,
+# wrong-direction) are out of scope for this model -- see
+# docs/superpowers/specs/2026-07-29-physical-condition-model-flow-design.md.
+
+path: ../data/yolo_dataset_physical
+train: images/train
+val: images/val
+
+names:
+  0: old_design
+  1: faded
+  2: bent_damaged
+  3: hanging
+  4: vandalized

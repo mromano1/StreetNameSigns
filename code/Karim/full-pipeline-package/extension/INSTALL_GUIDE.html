@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Street Sign Capture -- Install Guide</title>
+    <style>
+      body {
+        font: 15px/1.6 Arial, sans-serif;
+        max-width: 820px;
+        margin: 40px auto;
+        padding: 0 24px 80px;
+        color: #202124;
+      }
+      h1 { font-size: 24px; margin-bottom: 4px; }
+      h2 {
+        font-size: 18px;
+        margin-top: 36px;
+        padding-top: 14px;
+        border-top: 1px solid #dadce0;
+      }
+      h3 { font-size: 15px; }
+      a { color: #1a73e8; }
+      code {
+        background: #f1f3f4;
+        padding: 1px 5px;
+        border-radius: 3px;
+        font-size: 13px;
+      }
+      pre {
+        background: #f1f3f4;
+        padding: 10px 14px;
+        border-radius: 6px;
+        overflow-x: auto;
+      }
+      pre code { background: none; padding: 0; }
+      ul, ol { padding-left: 22px; }
+      li { margin-bottom: 6px; }
+      hr { border: none; border-top: 1px solid #dadce0; margin: 24px 0; }
+    </style>
+  </head>
+  <body>
+<h1>Installing the Street Sign Capture tool</h1>
+<p>This is a small add-on ("extension") for the Google Chrome web browser. It
+adds a "Capture Sign" button while you're browsing street imagery, so you can
+flag damaged street signs as you find them. You don't need any technical
+background to install or use it — just follow the steps below in order.</p>
+<p><strong>Before you start, you'll need:</strong></p>
+<ul>
+<li>Google Chrome (not Edge, Firefox, or Safari — this only works in Chrome)</li>
+<li>The extension file, <code>street-sign-capture-extension.zip</code>, sent to you by Karim</li>
+<li>Your own login for Cyclomedia Street Smart (this tool works alongside Street
+  Smart, but doesn't give you access to it — that's separate)</li>
+</ul>
+<h2>Step 1: Save and unzip the file</h2>
+<ol>
+<li>Save <code>street-sign-capture-extension.zip</code> somewhere you'll remember, like
+   your Desktop or Downloads folder.</li>
+<li>Find the file and <strong>unzip it</strong>:</li>
+<li><strong>Windows:</strong> Right-click the file → <strong>Extract All...</strong> → <strong>Extract</strong>.</li>
+<li><strong>Mac:</strong> Double-click the file. A new folder with the same name appears
+     next to it.</li>
+<li>You should now have a <strong>folder</strong> (not a <code>.zip</code> file) containing files
+   named <code>manifest.json</code>, <code>content.js</code>, and a few others. Keep this folder
+   where it is — don't delete it after installing, Chrome needs to keep
+   reading from it.</li>
+</ol>
+<h2>Step 2: Load it into Chrome</h2>
+<ol>
+<li>Open Chrome.</li>
+<li>Click into the address bar at the top, type <code>chrome://extensions</code>, and
+   press Enter.</li>
+<li>In the top-right corner of that page, find the <strong>Developer mode</strong> switch
+   and turn it <strong>on</strong>. (This just lets Chrome load extensions that aren't
+   from the Chrome Web Store — perfectly safe.)</li>
+<li>Three new buttons will appear. Click <strong>Load unpacked</strong>.</li>
+<li>A file-picker window opens. Navigate to and select the <strong>folder</strong> you
+   unzipped in Step 1 (the one containing <code>manifest.json</code>), then click
+   <strong>Select Folder</strong>.</li>
+<li>A card titled <strong>"Street Sign Capture"</strong> should now appear on the
+   extensions page. That means it's installed.</li>
+</ol>
+<h2>Step 3: Pin the icon (optional, but handy)</h2>
+<ol>
+<li>In Chrome's toolbar (top-right, near the address bar), click the puzzle
+   piece icon (Extensions).</li>
+<li>Find <strong>Street Sign Capture</strong> in the list and click the pin icon next to
+   it. Its icon now stays visible in the toolbar, so you can quickly check
+   how many signs you've captured.</li>
+</ol>
+<h2>Step 4: Try it</h2>
+<ol>
+<li>Go to Cyclomedia Street Smart (or Google Street View) and open any
+   location.</li>
+<li>Within a second or two, you should see:</li>
+<li>A small floating <strong>"📷 Capture Sign"</strong> button</li>
+<li>A small compass in the corner of the screen</li>
+<li>If you see those, installation worked — move on to <a href="USER_GUIDE.html">USER_GUIDE.html</a> for
+   how to actually capture a sign.</li>
+</ol>
+<h2>If something's not showing up</h2>
+<ul>
+<li><strong>Nothing appears at all:</strong> refresh the page (F5). The extension has to
+  load fresh on each new page/site.</li>
+<li><strong>You edited or replaced the extension folder after installing:</strong> go back
+  to <code>chrome://extensions</code>, find the Street Sign Capture card, and click the
+  reload icon (⟳) on it — <strong>then also refresh the page</strong> you're viewing
+  Street Smart on. Both steps are needed; reloading the extension alone
+  doesn't update a page that's already open.</li>
+<li><strong>The Capture button seems stuck on "Capturing..." forever:</strong> this is the
+  same fix as above — reload the extension in <code>chrome://extensions</code>, then
+  refresh the Street Smart tab.</li>
+<li><strong>Still stuck:</strong> contact Karim with a screenshot of what you're seeing.</li>
+</ul>
+  </body>
+</html>

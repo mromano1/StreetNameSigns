@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "Street Sign Capture",
+  "version": "1.19",
+  "description": "Capture a cropped Street View screenshot of a damaged sign, tagged with the nearest SIMS record.",
+  "permissions": ["activeTab", "downloads", "storage", "scripting", "alarms", "offscreen"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.google.com/maps/*", "https://streetsmart.cyclomedia.com/*"],
+      "js": ["date-utils.js", "damage-prediction.js", "location-freshness.js", "content.js"],
+      "css": ["content.css"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Street Sign Capture",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
