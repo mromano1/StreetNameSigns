@@ -9,7 +9,7 @@ The first prototype will focus on a small pilot neighborhood rather than citywid
 - Project repository: https://github.com/mromano1/StreetNameSigns
 - Contributors:
   - Bilal: https://github.com/BilalBennour7
-  - Teammate: https://github.com/knabahi
+  - Karim: https://github.com/knabahi
 
 ## Prototype workflow
 
