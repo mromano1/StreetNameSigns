@@ -76,7 +76,9 @@ needs to change -- it just works once `data/` is sitting there.
   live suggestions and the annotation tool's tight-crop suggestions):
   `start_model_server.bat`.
 - **The Chrome extension**: load `extension/` as an unpacked extension
-  via `chrome://extensions` (Developer mode -> Load unpacked).
+  via `chrome://extensions` (Developer mode -> Load unpacked). Full
+  step-by-step walkthrough with screenshots:
+  `extension/INSTALL_GUIDE.html` (open it in a browser).
 
 ## Verifying your setup
 

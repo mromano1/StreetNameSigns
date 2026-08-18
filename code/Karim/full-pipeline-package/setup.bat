@@ -66,6 +66,8 @@ if not exist .env (
 )
 echo.
 echo Setup complete. See README.md for what to run next.
+echo To install the Chrome capture extension, see extension\INSTALL_GUIDE.html
+echo (open it in a browser) for a full step-by-step walkthrough with screenshots.
 pause
 goto :EOF
 
