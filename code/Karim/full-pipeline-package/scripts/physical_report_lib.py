@@ -21,6 +21,7 @@ import shapefile
 from pyproj import Transformer
 
 import prepare_yolo_dataset_physical as pydp
+import community_board_lookup as cbl
 
 _TO_2263 = Transformer.from_crs("EPSG:4326", "EPSG:2263", always_xy=True)
 
@@ -38,6 +39,8 @@ SHAPEFILE_FIELDS = [
     ("human_label", "human_lbl"),
     ("filename", "filename"),
     ("capture_date", "cap_date"),
+    ("community_board", "comm_board"),
+    ("intersection", "intersect"),
 ]
 
 # NAD83 / New York Long Island (US feet) -- the exact WKT already used by
@@ -81,10 +84,35 @@ def _dedupe_flagged_predictions(flagged):
     return [(name, best_by_class[name]) for name in order]
 
 
-def build_shapefile_record(row, predictions, threshold=0.25):
+def build_intersection_string(on_street, from_street):
+    """Combines a manifest row's on_street/from_street (free-text,
+    typically all-caps, e.g. "6 AVENUE") into a human-readable
+    intersection label, e.g. "6 Avenue & West 53 Street". Either side
+    may be missing (some manifest rows only ever recorded one street).
+
+    Alphabetically sorted rather than on_street-first: two signs at the
+    same physical corner can have on_street/from_street recorded in
+    either order, and without canonicalizing, the same corner produces
+    two different strings depending on which sign's row gets read --
+    real example from the 2026-08-17 report, "Grand Concourse & E 138
+    St" vs "E 138 St & Grand Concourse" for the same corner. Sorting
+    means grouping/deduping by this string (e.g. a DOT reviewer) always
+    lands on one canonical label per corner."""
+    on_street = (on_street or "").strip().title()
+    from_street = (from_street or "").strip().title()
+    if on_street and from_street:
+        first, second = sorted([on_street, from_street])
+        return f"{first} & {second}"
+    return on_street or from_street
+
+
+def build_shapefile_record(row, predictions, threshold=0.25, cb_index=None):
     """row: a manifest CSV row dict (latitude, longitude, order_numbers,
-    sign_codes, corner_id, damage_category, filename, timestamp).
-    predictions: list of (class_name, confidence) tuples for this image.
+    sign_codes, corner_id, damage_category, filename, timestamp,
+    on_street, from_street). predictions: list of (class_name,
+    confidence) tuples for this image. cb_index: an optional Community
+    Board lookup index from community_board_lookup.build_community_board_index
+    / load_community_board_index -- when omitted, community_board is "".
     Returns a record dict, or None if no prediction meets `threshold`."""
     flagged = [(name, conf) for name, conf in predictions if conf >= threshold]
     if not flagged:
@@ -97,6 +125,10 @@ def build_shapefile_record(row, predictions, threshold=0.25):
     lat = float(row["latitude"])
     lon = float(row["longitude"])
     x, y = reproject_lat_lon_to_2263(lat, lon)
+
+    community_board = (
+        cbl.lookup_community_board(lat, lon, cb_index) if cb_index else ""
+    )
 
     return {
         "x": x,
@@ -111,6 +143,10 @@ def build_shapefile_record(row, predictions, threshold=0.25):
         "human_label": row.get("damage_category", ""),
         "filename": row.get("filename", ""),
         "capture_date": (row.get("timestamp") or "")[:10],
+        "community_board": community_board,
+        "intersection": build_intersection_string(
+            row.get("on_street", ""), row.get("from_street", "")
+        ),
     }
 
 
@@ -157,9 +193,10 @@ def group_records_by_predicted_class(records):
 
 def build_map_popup_html(record, image_b64):
     """record: a record dict (predicted_classes, confidences, human_label,
-    corner_id, filename, order_numbers, and optionally latitude/longitude).
-    image_b64: base64-encoded JPEG, or None if no image is available for
-    this record. Returns the HTML for a map marker popup."""
+    corner_id, filename, order_numbers, sign_codes, intersection,
+    community_board, and optionally latitude/longitude). image_b64:
+    base64-encoded JPEG, or None if no image is available for this record.
+    Returns the HTML for a map marker popup."""
     img_html = (
         f'<img src="data:image/jpeg;base64,{image_b64}" '
         f'style="max-width:220px;display:block;margin-bottom:6px;">'
@@ -175,9 +212,12 @@ def build_map_popup_html(record, image_b64):
     return (
         f'{img_html}'
         f'<b>{record.get("predicted_classes", "")}</b> ({record.get("confidences", "")})<br>'
-        f'SIMS No.: {record.get("order_numbers", "")}<br>'
-        f'Human label: {record.get("human_label", "")}<br>'
+        f'SN: {record.get("sign_codes", "")}<br>'
+        f'ST Order #: {record.get("order_numbers", "")}<br>'
+        f'Condition: {record.get("human_label", "")}<br>'
         f'Corner: {record.get("corner_id", "")}<br>'
+        f'Intersection: {html.escape(record.get("intersection", ""))}<br>'
+        f'Community Board: {record.get("community_board", "")}<br>'
         f'{latlon_html}'
         f'{record.get("filename", "")}'
     )

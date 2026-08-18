@@ -152,6 +152,66 @@ def test_build_shapefile_record_dedupe_preserves_distinct_classes():
     assert record["confidences"] == "0.81;0.50"
 
 
+def test_build_intersection_string_joins_streets():
+    assert lib.build_intersection_string("6 AVENUE", "WEST 53 STREET") == "6 Avenue & West 53 Street"
+
+
+def test_build_intersection_string_handles_missing_from_street():
+    assert lib.build_intersection_string("6 AVENUE", "") == "6 Avenue"
+
+
+def test_build_intersection_string_handles_missing_on_street():
+    assert lib.build_intersection_string("", "WEST 53 STREET") == "West 53 Street"
+
+
+def test_build_intersection_string_handles_both_missing():
+    assert lib.build_intersection_string("", "") == ""
+
+
+def test_build_intersection_string_is_order_independent():
+    # Two signs at the same physical corner can have on_street/from_street
+    # recorded in either order -- without canonicalizing, the same corner
+    # produces two different intersection strings depending on which sign's
+    # row happens to be read, which breaks any grouping/dedup a DOT reviewer
+    # does by intersection. Real example hit in the 2026-08-17 report:
+    # "Grand Concourse & E 138 St" vs "E 138 St & Grand Concourse".
+    forward = lib.build_intersection_string("GRAND CONCOURSE", "E 138 ST")
+    reversed_ = lib.build_intersection_string("E 138 ST", "GRAND CONCOURSE")
+    assert forward == reversed_
+
+
+def test_build_shapefile_record_includes_intersection():
+    row = {
+        "latitude": "40.746814", "longitude": "-73.976137",
+        "on_street": "MADISON AVENUE", "from_street": "EAST 39 STREET",
+        "filename": "a.jpg",
+    }
+    record = lib.build_shapefile_record(row, [("faded", 0.81)], threshold=0.25)
+    # Alphabetically canonicalized, not on_street-first -- see
+    # build_intersection_string's docstring.
+    assert record["intersection"] == "East 39 Street & Madison Avenue"
+
+
+def test_build_shapefile_record_community_board_defaults_empty_without_index():
+    row = {"latitude": "40.746814", "longitude": "-73.976137"}
+    record = lib.build_shapefile_record(row, [("faded", 0.81)], threshold=0.25)
+    assert record["community_board"] == ""
+
+
+class _FakePolygonAlwaysContains:
+    def contains(self, point):
+        return True
+
+
+def test_build_shapefile_record_uses_cb_index_when_given():
+    row = {"latitude": "40.746814", "longitude": "-73.976137"}
+    fake_index = [(_FakePolygonAlwaysContains(), "Manhattan CD 5")]
+    record = lib.build_shapefile_record(
+        row, [("faded", 0.81)], threshold=0.25, cb_index=fake_index
+    )
+    assert record["community_board"] == "Manhattan CD 5"
+
+
 def test_physical_class_colors_has_an_entry_per_class():
     for cls in lib.PHYSICAL_CLASS_NAMES:
         assert cls in lib.PHYSICAL_CLASS_COLORS
@@ -702,6 +762,30 @@ def test_group_records_by_predicted_class_ignores_empty_classes():
     assert grouped == {}
 
 
+def test_shapefile_fields_include_community_board_and_intersection():
+    keys = dict(lib.SHAPEFILE_FIELDS)
+    assert keys["community_board"] == "comm_board"
+    assert keys["intersection"] == "intersect"
+
+
+def test_write_shapefile_roundtrip_includes_new_fields(tmp_path):
+    records = [{
+        "x": 990862.0, "y": 211362.0, "order_numbers": "ST1", "sign_codes": "SN-1A",
+        "corner_id": "10001_000", "predicted_classes": "faded", "confidences": "0.81",
+        "human_label": "faded", "filename": "a.jpg", "capture_date": "2026-07-15",
+        "community_board": "Manhattan CD 5", "intersection": "Madison Avenue & East 39 Street",
+    }]
+    out_path = tmp_path / "test_report.shp"
+
+    lib.write_shapefile(records, out_path)
+
+    reader = pyshp.Reader(str(out_path))
+    as_dict = reader.shapeRecords()[0].record.as_dict()
+    assert as_dict["comm_board"] == "Manhattan CD 5"
+    assert as_dict["intersect"] == "Madison Avenue & East 39 Street"
+    reader.close()
+
+
 def test_build_map_popup_html_includes_image_and_metadata():
     record = {
         "predicted_classes": "faded", "confidences": "0.81",
@@ -735,6 +819,29 @@ def test_build_map_popup_html_includes_sims_number_and_coordinates():
     assert "ST01647077" in html
     assert "40.746814" in html
     assert "-73.976137" in html
+
+
+def test_build_map_popup_html_includes_sign_code():
+    record = {
+        "predicted_classes": "faded", "confidences": "0.81",
+        "human_label": "faded", "corner_id": "10001_609",
+        "filename": "a.jpg", "sign_codes": "SN-749A",
+        "order_numbers": "ST01647077",
+    }
+    html_out = lib.build_map_popup_html(record, image_b64=None)
+    assert "SN-749A" in html_out
+    assert "ST01647077" in html_out
+
+
+def test_build_map_popup_html_includes_community_board_and_intersection():
+    record = {
+        "predicted_classes": "faded", "confidences": "0.81", "order_numbers": "ST1",
+        "human_label": "faded", "corner_id": "10001_000",
+        "community_board": "Manhattan CD 5", "intersection": "Madison Avenue & East 39 Street",
+    }
+    popup_html = lib.build_map_popup_html(record, image_b64=None)
+    assert "Manhattan CD 5" in popup_html
+    assert "Madison Avenue &amp; East 39 Street" in popup_html or "Madison Avenue & East 39 Street" in popup_html
 
 
 def test_build_map_popup_html_omits_coordinates_when_missing():

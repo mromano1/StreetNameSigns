@@ -19,11 +19,13 @@ from ultralytics import YOLO
 SCRIPT_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPT_DIR))
 import physical_report_lib as lib  # noqa: E402
+import community_board_lookup as cbl  # noqa: E402
 
 RUNS_DIR = SCRIPT_DIR.parent / "yolo" / "runs_physical"
 HISTORY_PATH = RUNS_DIR / "PHYSICAL_RUN_HISTORY.csv"
 CLASS_METRICS_PATH = RUNS_DIR / "PHYSICAL_CLASS_METRICS_HISTORY.csv"
 REPORTS_DIR = SCRIPT_DIR.parent / "data" / "reports"
+COMMUNITY_BOARD_CACHE_PATH = SCRIPT_DIR.parent / "data" / "community_districts.geojson"
 TRAIN_DIR = SCRIPT_DIR.parent / "data" / "yolo_dataset_physical" / "images" / "train"
 VAL_DIR = SCRIPT_DIR.parent / "data" / "yolo_dataset_physical" / "images" / "val"
 TRAIN_LABELS_DIR = SCRIPT_DIR.parent / "data" / "yolo_dataset_physical" / "labels" / "train"
@@ -66,14 +68,14 @@ def load_run_metrics(run_name):
     return matches[-1] if matches else None
 
 
-def build_records(model, image_paths, rows_by_filename):
+def build_records(model, image_paths, rows_by_filename, cb_index=None):
     records = []
     for image_path in image_paths:
         row = rows_by_filename.get(Path(image_path).name)
         if row is None:
             continue
         predictions = predict_image(model, image_path)
-        record = lib.build_shapefile_record(row, predictions, threshold=CONF_THRESHOLD)
+        record = lib.build_shapefile_record(row, predictions, threshold=CONF_THRESHOLD, cb_index=cb_index)
         if record is not None:
             records.append(record)
     return records
@@ -151,14 +153,19 @@ def main(run_name=None):
 
     rows_by_filename = lib.load_manifest_rows_by_filename()
 
+    print(f"Loading Community Board boundaries (cache: {COMMUNITY_BOARD_CACHE_PATH})...")
+    cb_index = cbl.load_community_board_index(COMMUNITY_BOARD_CACHE_PATH)
+    if not cb_index:
+        print(f"WARNING: Community Board index is empty; comm_board will be blank for every record. Check {COMMUNITY_BOARD_CACHE_PATH}.")
+
     val_images = sorted(VAL_DIR.glob("*.jpg"))
     train_images = sorted(TRAIN_DIR.glob("*.jpg"))
     all_images = train_images + val_images
 
     print(f"Running inference on {len(val_images)} val image(s)...")
-    val_records = build_records(model, val_images, rows_by_filename)
+    val_records = build_records(model, val_images, rows_by_filename, cb_index=cb_index)
     print(f"Running inference on {len(all_images)} total image(s)...")
-    all_records = build_records(model, all_images, rows_by_filename)
+    all_records = build_records(model, all_images, rows_by_filename, cb_index=cb_index)
 
     print("Building interactive map...")
     map_doc_html = build_interactive_map_html(model, all_records, [TRAIN_DIR, VAL_DIR])
