@@ -1,0 +1,151 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Street Sign Damage Detection -- Full Pipeline Package</title>
+    <style>
+      body {
+        font: 15px/1.6 Arial, sans-serif;
+        max-width: 820px;
+        margin: 40px auto;
+        padding: 0 24px 80px;
+        color: #202124;
+      }
+      h1 { font-size: 24px; margin-bottom: 4px; }
+      h2 {
+        font-size: 18px;
+        margin-top: 36px;
+        padding-top: 14px;
+        border-top: 1px solid #dadce0;
+      }
+      h3 { font-size: 15px; }
+      a { color: #1a73e8; }
+      code {
+        background: #f1f3f4;
+        padding: 1px 5px;
+        border-radius: 3px;
+        font-size: 13px;
+      }
+      pre {
+        background: #f1f3f4;
+        padding: 10px 14px;
+        border-radius: 6px;
+        overflow-x: auto;
+      }
+      pre code { background: none; padding: 0; }
+      ul, ol { padding-left: 22px; }
+      li { margin-bottom: 6px; }
+      hr { border: none; border-top: 1px solid #dadce0; margin: 24px 0; }
+    </style>
+  </head>
+  <body>
+    <h1>Street Sign Damage Detection -- Full Pipeline Package</h1>
+
+    <p>This package contains the entire street-sign-damage pipeline: SIMS
+    querying, Cyclomedia panorama fetching (including multi-angle capture),
+    the offline annotation tool, the Chrome capture extension, physical-model
+    training, and automatic-mode inference. It's broader in scope than the
+    separate extension-only stakeholder package or the narrower
+    extension+backend <code>partner-package</code> -- this one is for someone
+    who wants to run the whole thing themselves.</p>
+
+    <h2>What's included</h2>
+    <ul>
+      <li><code>scripts/</code> -- the full pipeline (see
+        <code>PIPELINE_SCRIPT_NAMES</code> in
+        <code>build_full_pipeline_package.py</code> for the exact list), plus
+        each script's own test, so you can verify your setup with
+        <code>pytest</code>.</li>
+      <li><code>annotation_tool/</code> -- the offline box-drawing/tagging
+        tool.</li>
+      <li><code>extension/</code> -- the Chrome capture extension (live
+        Google Maps / Cyclomedia Street Smart capture, with ML-assisted
+        damage suggestions).</li>
+      <li><code>yolo26n.pt</code>, plus the currently-trained
+        physical-damage-model weights and the spatial-detection
+        sanity-check weights -- needed for automatic mode and the model
+        server to run at all.</li>
+      <li><code>yolo/data_physical.yaml</code> and
+        <code>yolo/data_physical_from_annotations.yaml</code> -- the dataset
+        configs <code>train_physical_model.py</code> and
+        <code>prepare_physical_dataset_from_annotations.py</code> need,
+        rewritten to point at this package's own <code>data/</code> instead
+        of the original developer's machine.</li>
+      <li><code>start_pipeline_shell.bat</code>,
+        <code>start_model_server.bat</code>,
+        <code>start_tight_crop_server.bat</code>,
+        <code>annotation_tool/start_annotation_server.bat</code> --
+        rewritten to use this package's own virtual environment (see Setup),
+        not the original developer's machine-specific Python path.</li>
+      <li><code>requirements.txt</code>, <code>.env.example</code>,
+        <code>setup.bat</code>.</li>
+    </ul>
+
+    <h2>What's NOT included</h2>
+    <ul>
+      <li><b>No real credentials.</b> <code>.env.example</code> lists every
+        environment variable the included scripts actually read (Cyclomedia
+        access, plus optional SIMS/NYC Open Data rate-limit tokens); you
+        supply your own values.</li>
+      <li><b>No bulk data.</b> This package on its own has no fetched
+        panoramas, annotations, or SIMS data -- see "Adding the data
+        package" below.</li>
+      <li>This project's own internal planning/spec documents, git history,
+        and the older versioned extension-only zips are not included.</li>
+    </ul>
+
+    <h2>Setup</h2>
+    <ol>
+      <li>Have Python 3.10+ available -- either already on your PATH, or
+        installed somewhere else on this computer (e.g. Anaconda/Miniconda).
+        <code>setup.bat</code> checks PATH first and, if that fails, asks
+        for the full path to an existing <code>python.exe</code> before
+        offering to open the python.org download page.</li>
+      <li>Double-click <code>setup.bat</code> (or run it from a terminal).
+        This creates a <code>venv/</code> folder, installs everything in
+        <code>requirements.txt</code> into it, and creates <code>.env</code>
+        from <code>.env.example</code> if one doesn't already exist.</li>
+      <li>Edit <code>.env</code> with your own Cyclomedia credentials
+        (<code>CYCLOMEDIA_USERNAME</code>, <code>CYCLOMEDIA_PASSWORD</code>,
+        <code>CYCLOMEDIA_API_KEY</code>). You only need these to fetch
+        <i>new</i> panoramas or query SIMS live -- if you're only using data
+        from the companion data package, you can skip this for now.</li>
+    </ol>
+
+    <h2>Adding the data package</h2>
+    <p>If you have the companion <code>full-pipeline-data</code> folder,
+    copy its <code>data/</code> subfolder into this package's own root,
+    right alongside <code>scripts/</code> and <code>annotation_tool/</code>.
+    Every script already resolves paths like
+    <code>../data/cyclomedia_panoramas/</code> relative to
+    <code>scripts/</code>, so nothing else needs to change -- it just works
+    once <code>data/</code> is sitting there.</p>
+
+    <h2>Running things</h2>
+    <ul>
+      <li><b>The full guided pipeline</b> (select a Community Board, pull
+        SIMS signs + Cyclomedia panoramas, then choose manual annotation or
+        automatic inference): double-click
+        <code>start_pipeline_shell.bat</code>.</li>
+      <li><b>Manual annotation mode</b> needs two servers running alongside
+        it: <code>start_tight_crop_server.bat</code> and
+        <code>annotation_tool/start_annotation_server.bat</code> (the
+        pipeline shell launches both of these for you automatically when
+        you choose manual mode).</li>
+      <li><b>The physical-damage-model server</b> (used by both the
+        extension's live suggestions and the annotation tool's tight-crop
+        suggestions): <code>start_model_server.bat</code>.</li>
+      <li><b>The Chrome extension</b>: load <code>extension/</code> as an
+        unpacked extension via <code>chrome://extensions</code> (Developer
+        mode -&gt; Load unpacked). Full step-by-step walkthrough with
+        screenshots: <a href="extension/INSTALL_GUIDE.html">extension/INSTALL_GUIDE.html</a>.</li>
+    </ul>
+
+    <h2>Verifying your setup</h2>
+    <p>From <code>scripts/</code>, with the venv activated:</p>
+    <pre><code>..\venv\Scripts\pytest</code></pre>
+    <p>All tests should pass. If any fail, something about your environment
+    (missing dependency, wrong Python version) needs attention before
+    relying on the pipeline.</p>
+  </body>
+</html>
