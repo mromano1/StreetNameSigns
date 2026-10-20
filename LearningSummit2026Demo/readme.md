@@ -1,6 +1,6 @@
 Hello everyone
 
-Thanks for registering for our presentation at the 2026 Learning Summit. This folder contains the OTI package: oti-streetNameSign-package-v14.zip
+Thanks for registering for our presentation at the 2026 Learning Summit. This folder contains the OTI package: **oti-streetNameSign-package-v14.zip**
 
 This zip contains everything you will need to follow along with the presentation.
 
